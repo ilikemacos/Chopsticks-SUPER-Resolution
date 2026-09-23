@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "name": "Cyber Example",
+  "executablePath": "C:/Games/CyberExample/bin/x64/CyberExample.exe",
+  "api": "DirectX 12",
+  "upscaler": "FSR3",
+  "quality": "Quality",
+  "frameGen": "FSR3-FG",
+  "frameGenEnabled": true,
+  "sharpness": 0.6,
+  "outputWidth": 2560,
+  "outputHeight": 1440,
+  "fpsLimit": 120,
+  "gameDeclaresUpscalerSupport": true,
+  "gameDeclaresFrameGenSupport": true,
+  "extra": {
+    "notes": "Single-player title, no anti-cheat. Config-only integration."
+  }
+}

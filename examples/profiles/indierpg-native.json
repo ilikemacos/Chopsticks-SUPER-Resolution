@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "name": "Indie RPG Example",
+  "executablePath": "C:/Games/IndieRPG/IndieRPG.exe",
+  "api": "DirectX 11",
+  "upscaler": "None",
+  "quality": "Native",
+  "frameGen": "None",
+  "frameGenEnabled": false,
+  "sharpness": 0.0,
+  "outputWidth": 1920,
+  "outputHeight": 1080,
+  "fpsLimit": 60,
+  "gameDeclaresUpscalerSupport": false,
+  "gameDeclaresFrameGenSupport": false,
+  "extra": {
+    "notes": "DX11 title with no upscaler support. Native render, 60 FPS cap. UFX correctly offers no temporal upscaling here."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "name": "Race Sim Example",
+  "executablePath": "C:/Games/RaceSim/RaceSim.exe",
+  "api": "DirectX 12",
+  "upscaler": "XeSS",
+  "quality": "Balanced",
+  "frameGen": "None",
+  "frameGenEnabled": false,
+  "sharpness": 0.5,
+  "outputWidth": 3840,
+  "outputHeight": 2160,
+  "fpsLimit": null,
+  "gameDeclaresUpscalerSupport": true,
+  "gameDeclaresFrameGenSupport": false,
+  "extra": {
+    "notes": "4K output with XeSS Balanced. XMX path on Intel Arc; DP4a on other GPUs."
+  }
+}

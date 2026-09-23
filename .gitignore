@@ -1,0 +1,32 @@
+# Build output
+/build/
+/out/
+build-*/
+cmake-build-*/
+*.obj
+*.exe
+*.dll
+*.pdb
+*.ilk
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+_deps/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.vcxproj.filters
+
+# Website (its own .gitignore covers node_modules/.next too)
+website/node_modules/
+website/.next/
+website/out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/

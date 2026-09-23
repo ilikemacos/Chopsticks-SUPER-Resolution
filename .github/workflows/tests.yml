@@ -1,0 +1,41 @@
+name: Tests (cross-platform core)
+
+# The platform-agnostic core (GPU model, profiles, upscaler capability logic,
+# backups, scanner parsing) builds and tests on Linux too, giving fast feedback
+# without a Windows runner. The Win32 UI and D3D/Vulkan probes are Windows-only
+# and covered by windows-build.yml.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "tests/**"
+      - "CMakeLists.txt"
+      - ".github/workflows/tests.yml"
+  pull_request:
+    paths:
+      - "app/**"
+      - "tests/**"
+      - "CMakeLists.txt"
+      - ".github/workflows/tests.yml"
+  workflow_dispatch:
+
+jobs:
+  core-tests:
+    name: Core tests (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Configure (core + tests only)
+        run: cmake -S . -B build -DUFX_BUILD_APP=OFF -DUFX_BUILD_TESTS=ON
+
+      - name: Build
+        run: cmake --build build --parallel
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure

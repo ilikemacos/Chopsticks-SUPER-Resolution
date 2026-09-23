@@ -1,0 +1,83 @@
+{
+  "_comment": "Reference capability matrix loaded at runtime. Values reflect vendor public documentation as of Q1 2026. This file describes CAPABILITY and REQUIREMENTS only; actual availability is always re-verified against the detected hardware and the game's declared support.",
+  "schema": 1,
+  "upscalers": [
+    {
+      "id": "None",
+      "displayName": "Native (no upscaling)",
+      "apis": ["DirectX 11", "DirectX 12", "Vulkan"],
+      "modes": ["Native"],
+      "gameIntegrationRequired": false,
+      "externalWrapperExists": false
+    },
+    {
+      "id": "FSR1",
+      "displayName": "FSR 1 (spatial)",
+      "vendor": "AMD FidelityFX",
+      "apis": ["DirectX 11", "DirectX 12", "Vulkan"],
+      "modes": ["Ultra Quality", "Quality", "Balanced", "Performance"],
+      "requirements": "Spatial upscaler; post-tonemap color image only.",
+      "gameIntegrationRequired": true,
+      "externalWrapperExists": true
+    },
+    {
+      "id": "FSR2",
+      "displayName": "FSR 2",
+      "vendor": "AMD FidelityFX",
+      "apis": ["DirectX 11", "DirectX 12", "Vulkan"],
+      "modes": ["Quality", "Balanced", "Performance", "Ultra Performance"],
+      "requirements": "Temporal: motion vectors, depth and jitter from the engine.",
+      "gameIntegrationRequired": true,
+      "externalWrapperExists": true
+    },
+    {
+      "id": "FSR3",
+      "displayName": "FSR 3 (upscaling)",
+      "vendor": "AMD FidelityFX",
+      "apis": ["DirectX 11", "DirectX 12", "Vulkan"],
+      "modes": ["Native", "Quality", "Balanced", "Performance", "Ultra Performance"],
+      "requirements": "Temporal: motion vectors, depth and jitter from the engine. Frame generation is a separate component.",
+      "gameIntegrationRequired": true,
+      "externalWrapperExists": true
+    },
+    {
+      "id": "FSR4",
+      "displayName": "FSR 4",
+      "vendor": "AMD FidelityFX",
+      "apis": ["DirectX 12", "Vulkan"],
+      "modes": ["Quality", "Balanced", "Performance"],
+      "requirements": "ML-based; requires AMD RDNA 4 hardware and a game that ships FSR 4.",
+      "gameIntegrationRequired": true,
+      "externalWrapperExists": false,
+      "hardware": { "vendor": "AMD", "arch": "RDNA 4" }
+    },
+    {
+      "id": "XeSS",
+      "displayName": "Intel XeSS",
+      "vendor": "Intel",
+      "apis": ["DirectX 11", "DirectX 12", "Vulkan"],
+      "modes": ["Ultra Quality", "Quality", "Balanced", "Performance", "Ultra Performance"],
+      "requirements": "Temporal: motion vectors, depth and jitter. XMX on Intel Arc, DP4a fallback elsewhere.",
+      "gameIntegrationRequired": true,
+      "externalWrapperExists": true
+    }
+  ],
+  "frameGenerators": [
+    {
+      "id": "FSR3-FG",
+      "displayName": "FSR 3 Frame Generation",
+      "vendor": "AMD FidelityFX",
+      "apis": ["DirectX 12", "Vulkan"],
+      "requirements": "Game must integrate FidelityFX Frame Generation.",
+      "externalLimitation": "Cannot be added to a game that did not ship it."
+    },
+    {
+      "id": "XeSS-FG",
+      "displayName": "XeSS Frame Generation",
+      "vendor": "Intel",
+      "apis": ["DirectX 12"],
+      "requirements": "Game must integrate XeSS Frame Generation.",
+      "externalLimitation": "Cannot be added to a game that did not ship it."
+    }
+  ]
+}

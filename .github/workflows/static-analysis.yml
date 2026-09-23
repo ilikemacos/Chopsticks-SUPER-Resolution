@@ -1,0 +1,54 @@
+name: Static analysis
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  cpp-analysis:
+    name: clang-tidy + cppcheck (core)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y clang-tidy cppcheck
+
+      - name: Configure with compile commands
+        run: cmake -S . -B build -DUFX_BUILD_APP=OFF -DUFX_BUILD_TESTS=OFF -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+      - name: Build (to fetch deps for include paths)
+        run: cmake --build build --parallel || true
+
+      - name: cppcheck
+        run: |
+          cppcheck --std=c++20 --enable=warning,performance,portability \
+            --inline-suppr --error-exitcode=1 \
+            --suppress=missingInclude --suppress=unusedFunction \
+            -I app app/core app/gpu app/upscaling app/framegen app/profiles app/logging
+
+      - name: clang-tidy (changed core sources)
+        run: |
+          clang-tidy -p build \
+            app/upscaling/*.cpp app/framegen/*.cpp app/profiles/*.cpp app/core/*.cpp \
+            --warnings-as-errors='' || true
+
+  website-lint:
+    name: Website lint + typecheck
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+      - run: npm ci
+      # `next lint` also generates next-env.d.ts, which the type check relies on;
+      # the production build (website.yml) is the authoritative type gate.
+      - run: npm run lint

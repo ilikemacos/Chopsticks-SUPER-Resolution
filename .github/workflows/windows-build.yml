@@ -1,0 +1,45 @@
+name: Windows build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "tests/**"
+      - "CMakeLists.txt"
+      - ".github/workflows/windows-build.yml"
+  pull_request:
+    paths:
+      - "app/**"
+      - "tests/**"
+      - "CMakeLists.txt"
+      - ".github/workflows/windows-build.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (Windows, x64, ${{ matrix.config }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -S . -B build -A x64
+
+      - name: Build
+        run: cmake --build build --config ${{ matrix.config }} --parallel
+
+      - name: Test
+        run: ctest --test-dir build -C ${{ matrix.config }} --output-on-failure
+
+      - name: Upload app artifact
+        if: matrix.config == 'Release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: UniversalFrameFX-x64
+          path: build/app/${{ matrix.config }}/UniversalFrameFX.exe
+          if-no-files-found: warn
