@@ -20,10 +20,10 @@ export function Hero() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
-            href={site.portableZipUrl}
+            href={site.appExeUrl}
             className="rounded-lg bg-accent px-6 py-3 font-medium text-white shadow-lg shadow-accent/20 transition-colors hover:bg-accentSoft"
           >
-            Download for Windows (.zip)
+            Download for Windows (.exe)
           </a>
           <a
             href={site.githubUrl}
@@ -33,7 +33,8 @@ export function Hero() {
           </a>
         </div>
         <p className="mt-4 text-xs text-muted/70">
-          Windows 11 64-bit · x64 · no bundled proprietary vendor binaries ·{" "}
+          Windows 11 64-bit · x64 · native .NET 8 app, {site.appVersion} · no
+          bundled proprietary vendor binaries ·{" "}
           <a href="#download" className="underline hover:text-white">
             other install options
           </a>
