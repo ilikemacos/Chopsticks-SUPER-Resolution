@@ -34,7 +34,8 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $AppName = "Universal FrameFX"
-$DataDir = Join-Path $env:LOCALAPPDATA "UniversalFrameFX"
+# The PowerShell edition stores profiles/backups/logs under %APPDATA% (Roaming).
+$DataDir = Join-Path $env:APPDATA "UniversalFrameFX"
 
 function Write-Step([string]$msg) { Write-Host "==> $msg" -ForegroundColor Cyan }
 function Write-Ok([string]$msg)   { Write-Host "    $msg" -ForegroundColor Green }

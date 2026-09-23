@@ -20,10 +20,10 @@ export function Hero() {
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <a
-            href={site.msiDownloadUrl}
+            href={site.portableZipUrl}
             className="rounded-lg bg-accent px-6 py-3 font-medium text-white shadow-lg shadow-accent/20 transition-colors hover:bg-accentSoft"
           >
-            Download for Windows (.msi)
+            Download for Windows (.zip)
           </a>
           <a
             href={site.githubUrl}
