@@ -1,10 +1,12 @@
-// Central place for repository / release URLs. Replace OWNER before publishing.
+// Central place for repository / release URLs.
 export const site = {
-  owner: "OWNER",
-  repo: "UniversalFrameFX",
-  githubUrl: "https://github.com/OWNER/UniversalFrameFX",
-  releasesUrl: "https://github.com/OWNER/UniversalFrameFX/releases",
+  owner: "ilikemacos",
+  repo: "Chopsticks-SUPER-Resolution",
+  githubUrl: "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution",
+  releasesUrl:
+    "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases",
   latestDownloadUrl:
-    "https://github.com/OWNER/UniversalFrameFX/releases/latest",
-  docsUrl: "https://github.com/OWNER/UniversalFrameFX/tree/main/docs",
+    "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/latest",
+  docsUrl:
+    "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/tree/claude/great-babbage-lqfk8p/docs",
 };
