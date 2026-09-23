@@ -12,6 +12,14 @@ on:
     paths:
       - "app-wpf/**"
   workflow_dispatch:
+    inputs:
+      release:
+        description: "Publish a GitHub Release with the built exe"
+        type: boolean
+        default: true
+      tag:
+        description: "Release tag"
+        default: "v0.1.0"
 
 permissions:
   contents: write
@@ -60,10 +68,13 @@ jobs:
           name: UniversalFrameFX-win-x64
           path: dist/*
 
-      - name: Publish GitHub Release (tags only)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.release)
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || inputs.tag }}
+          name: Universal FrameFX ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || inputs.tag }}
+          target_commitish: ${{ github.sha }}
           files: |
             dist/UniversalFrameFX.exe
             dist/UniversalFrameFX.exe.sha256
