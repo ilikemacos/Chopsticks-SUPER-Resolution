@@ -9,6 +9,12 @@ cmake-build-*/
 *.pdb
 *.ilk
 
+# .NET / WPF app
+app-wpf/**/bin/
+app-wpf/**/obj/
+publish/
+dist/
+
 # CMake
 CMakeCache.txt
 CMakeFiles/
