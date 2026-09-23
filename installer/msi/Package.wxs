@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  WiX Toolset v5 authoring for the Universal FrameFX MSI.
+
+  Build it with scripts/build-msi.ps1, which installs the WiX .NET tool if
+  needed, stages the payload (the app exe plus README, LICENSE, examples,
+  capabilities.json and uninstall.ps1) into a folder, then runs "wix build"
+  with StageDir pointing at that folder and ProductVersion set. The GitHub
+  Actions "Package release" workflow does the same on every tag.
+
+  This package installs per-machine into Program Files, so it requires
+  elevation — exactly like any standard MSI that writes a shared install for
+  all users. Users who want a no-admin install can use installer/install.ps1
+  instead. The MSI never touches Windows system files, Defender or SmartScreen;
+  Windows Installer itself manages the Add/Remove Programs entry and uninstall.
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Universal FrameFX"
+           Manufacturer="Universal FrameFX contributors"
+           Version="$(var.ProductVersion)"
+           UpgradeCode="4446A5DD-3279-4E83-9327-A5DF78039269"
+           Scope="perMachine"
+           Compressed="yes">
+
+    <!-- Block downgrades and cleanly replace older versions. -->
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed. Please uninstall it first." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Add/Remove Programs metadata. The icon is extracted from the app exe. -->
+    <Icon Id="AppIcon.exe" SourceFile="$(var.StageDir)\UniversalFrameFX.exe" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon.exe" />
+    <Property Id="ARPURLINFOABOUT" Value="https://github.com/ilikemacos/Chopsticks-SUPER-Resolution" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/blob/main/docs/TROUBLESHOOTING.md" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+
+    <!-- Simple, license-gated UI. -->
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUILicenseRtf" Value="installer/msi/License.rtf" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="Universal FrameFX" />
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppProgramMenuDir" Name="Universal FrameFX" />
+    </StandardDirectory>
+
+    <!-- Start Menu shortcut. The per-user HKCU key path lets Windows Installer
+         track the shortcut component correctly under a per-machine package. -->
+    <Component Id="AppShortcut" Directory="AppProgramMenuDir"
+               Guid="6EA4D457-C140-4735-B3BF-E21494F7FE5D">
+      <Shortcut Id="StartMenuShortcut"
+                Name="Universal FrameFX"
+                Description="Configure FSR, XeSS and frame generation"
+                Target="[INSTALLFOLDER]UniversalFrameFX.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemoveAppProgramMenuDir" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\UniversalFrameFX"
+                     Name="installed" Type="integer" Value="1" KeyPath="yes" />
+    </Component>
+
+    <Feature Id="Main" Title="Universal FrameFX" Level="1">
+      <!-- Harvest every staged payload file into INSTALLFOLDER. -->
+      <Files Include="$(var.StageDir)\**" Directory="INSTALLFOLDER" />
+      <ComponentRef Id="AppShortcut" />
+    </Feature>
+  </Package>
+</Wix>

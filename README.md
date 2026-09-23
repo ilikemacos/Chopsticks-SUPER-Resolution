@@ -27,15 +27,24 @@ Any GPU that exposes DirectX 11 Feature Level 11_0 or higher through DXGI. Wheth
 
 ## Installation
 
-**Recommended (release build):**
+**MSI installer (standard, per-machine):**
+
+1. Download `UniversalFrameFX-x64.msi` from [Releases](https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases).
+2. Verify its SHA-256 against the `.msi.sha256` posted with the release.
+3. Double-click it and follow the wizard. It installs to `Program Files`, adds a
+   Start Menu shortcut, and registers an Add/Remove Programs entry. Because it
+   installs for all users, Windows requests elevation — that is the only reason
+   admin is needed, and it never touches system files, Defender or SmartScreen.
+
+**PowerShell installer (no admin, per-user):**
 
 ```powershell
-iex "& { $(iwr -useb https://raw.githubusercontent.com/OWNER/UniversalFrameFX/main/installer/install.ps1) }"
+iex "& { $(iwr -useb https://raw.githubusercontent.com/ilikemacos/Chopsticks-SUPER-Resolution/main/installer/install.ps1) }"
 ```
 
-**Manual:**
+**Manual (zip):**
 
-1. Download the latest `UniversalFrameFX-x64.zip` from [Releases](https://github.com/OWNER/UniversalFrameFX/releases).
+1. Download the latest `UniversalFrameFX-x64.zip` from [Releases](https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases).
 2. Verify the SHA-256 checksum against the value posted with the release.
 3. Extract to `%LOCALAPPDATA%\Programs\UniversalFrameFX`.
 4. Run `UniversalFrameFX.exe`.

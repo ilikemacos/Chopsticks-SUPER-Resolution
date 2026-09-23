@@ -1,8 +1,8 @@
 name: Package release
 
-# Builds the app, packages a versioned x64 zip, generates a SHA-256 checksum,
-# and attaches both to the GitHub Release when a tag is pushed. install.ps1
-# consumes exactly these artifacts.
+# Builds the app, packages a versioned x64 zip and an MSI installer, generates
+# SHA-256 checksums, and attaches them to the GitHub Release when a tag is
+# pushed. install.ps1 consumes the zip; the MSI is a standalone installer.
 
 on:
   push:
@@ -49,6 +49,29 @@ jobs:
           "$hash  $zip" | Out-File -Encoding ascii "$zip.sha256"
           Write-Host "SHA-256: $hash"
 
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          $v = if ($env:GITHUB_REF -like "refs/tags/v*") { $env:GITHUB_REF_NAME.TrimStart("v") } else { "0.1.0" }
+          "version=$v" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Build MSI (WiX)
+        shell: pwsh
+        run: |
+          dotnet tool install --global wix
+          $env:PATH = "$env:PATH;$env:USERPROFILE\.dotnet\tools"
+          wix extension add -g WixToolset.UI.wixext
+          wix build installer/msi/Package.wxs `
+            -ext WixToolset.UI.wixext `
+            -arch x64 `
+            -d "StageDir=stage/UniversalFrameFX" `
+            -d "ProductVersion=${{ steps.ver.outputs.version }}" `
+            -o UniversalFrameFX-x64.msi
+          $hash = (Get-FileHash -Algorithm SHA256 UniversalFrameFX-x64.msi).Hash.ToLower()
+          "$hash  UniversalFrameFX-x64.msi" | Out-File -Encoding ascii UniversalFrameFX-x64.msi.sha256
+          Write-Host "MSI SHA-256: $hash"
+
       - name: Upload workflow artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -56,6 +79,8 @@ jobs:
           path: |
             UniversalFrameFX-x64.zip
             UniversalFrameFX-x64.zip.sha256
+            UniversalFrameFX-x64.msi
+            UniversalFrameFX-x64.msi.sha256
 
       - name: Attach to release
         if: startsWith(github.ref, 'refs/tags/')
@@ -64,3 +89,5 @@ jobs:
           files: |
             UniversalFrameFX-x64.zip
             UniversalFrameFX-x64.zip.sha256
+            UniversalFrameFX-x64.msi
+            UniversalFrameFX-x64.msi.sha256
