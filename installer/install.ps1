@@ -99,7 +99,8 @@ try {
     # --- 6. Verify checksum --------------------------------------------------
     try {
         $sumText = (Invoke-WebRequest -Uri "$BaseUrl/$ZipName.sha256" -UseBasicParsing -ErrorAction Stop).Content
-        $expected = ($sumText -split '\s+')[0].Trim().ToLower()
+        if ($sumText -is [byte[]]) { $sumText = [System.Text.Encoding]::UTF8.GetString($sumText) }
+        $expected = ((([string]$sumText) -split '\s+' | Where-Object { $_ }) | Select-Object -First 1).Trim().ToLower()
         $actual = (Get-FileHash -Path $zipPath -Algorithm SHA256).Hash.ToLower()
         if ($expected -and $expected -ne $actual) {
             Fail "Checksum mismatch:`n  expected $expected`n  actual   $actual"

@@ -35,7 +35,8 @@ try {
     Invoke-WebRequest -Uri "$BaseUrl/$ZipName" -OutFile $zip -UseBasicParsing
     try {
         $sum = (Invoke-WebRequest -Uri "$BaseUrl/$ZipName.sha256" -UseBasicParsing -ErrorAction Stop).Content
-        $expected = ($sum -split '\s+')[0].Trim().ToLower()
+        if ($sum -is [byte[]]) { $sum = [System.Text.Encoding]::UTF8.GetString($sum) }
+        $expected = ((([string]$sum) -split '\s+' | Where-Object { $_ }) | Select-Object -First 1).Trim().ToLower()
         $actual = (Get-FileHash -Path $zip -Algorithm SHA256).Hash.ToLower()
         if ($expected -and $expected -ne $actual) { Fail "Checksum mismatch: expected $expected actual $actual" }
         if ($expected) { Ok "SHA-256 verified." }
