@@ -2,11 +2,12 @@ import Link from "next/link";
 import { site } from "@/lib/site";
 
 const links = [
-  { href: "#features", label: "Features" },
-  { href: "#compatibility", label: "Compatibility" },
-  { href: "#download", label: "Download" },
-  { href: "#docs", label: "Docs" },
-  { href: "#faq", label: "FAQ" },
+  { href: "/console", label: "Console" },
+  { href: "/#features", label: "Features" },
+  { href: "/#compatibility", label: "Compatibility" },
+  { href: "/#download", label: "Download" },
+  { href: "/#docs", label: "Docs" },
+  { href: "/#faq", label: "FAQ" },
 ];
 
 export function Nav() {
