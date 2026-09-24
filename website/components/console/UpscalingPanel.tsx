@@ -72,7 +72,7 @@ export function UpscalingPanel({
 
       <div className="mb-6 grid gap-4 lg:grid-cols-[1.1fr_1fr]">
         <Card>
-          <p className="mb-4 font-display text-base font-semibold text-white">Target</p>
+          <p className="mb-4 font-display text-base font-semibold text-fg">Target</p>
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Profile name">
               <TextInput
@@ -115,7 +115,7 @@ export function UpscalingPanel({
           </div>
 
           {method ? (
-            <div className="mt-4 rounded-xl border border-white/5 bg-white/[0.02] p-4">
+            <div className="mt-4 rounded-xl border border-border bg-card/40 p-4">
               <div className="mb-2 flex flex-wrap items-center gap-2">
                 <Pill tone={method.integration === "external" ? "accent" : method.integration === "native" ? "muted" : "bad"}>
                   {integrationLabel[method.integration]}
@@ -203,8 +203,8 @@ export function UpscalingPanel({
 
         <div className="space-y-4">
           <Card>
-            <p className="mb-4 font-display text-base font-semibold text-white">Resolution plan</p>
-            <div className="mb-4 rounded-xl border border-accent/25 bg-accent/5 p-4 text-center">
+            <p className="mb-4 font-display text-base font-semibold text-fg">Resolution plan</p>
+            <div className="mb-4 rounded-xl border border-primary/25 bg-primary/5 p-4 text-center">
               <p className="font-mono text-[10px] uppercase tracking-widest text-faint">Set the game to</p>
               <p className="mt-1 font-display text-2xl font-bold text-gradient">
                 {plan.renderWidth} × {plan.renderHeight}
@@ -212,7 +212,7 @@ export function UpscalingPanel({
               <p className="mt-2 font-mono text-[10px] uppercase tracking-widest text-faint">
                 FrameFX outputs
               </p>
-              <p className="mt-1 font-display text-lg font-semibold text-white">
+              <p className="mt-1 font-display text-lg font-semibold text-fg">
                 {plan.outputWidth} × {plan.outputHeight}
               </p>
             </div>
@@ -233,7 +233,7 @@ export function UpscalingPanel({
           </Card>
 
           <Card>
-            <p className="mb-3 font-display text-base font-semibold text-white">Frame generation</p>
+            <p className="mb-3 font-display text-base font-semibold text-fg">Frame generation</p>
             <Field label="Native frame generation">
               <Select
                 value={draft.frameGen}
@@ -289,14 +289,14 @@ function Toggle({
   return (
     <button
       onClick={() => onChange(!on)}
-      className="flex items-center justify-between gap-3 rounded-lg border border-border bg-black/30 px-3 py-2 text-left text-xs text-white transition-colors hover:border-accent"
+      className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card px-3 py-2 text-left text-xs text-fg transition-colors hover:border-primary/30"
     >
       <span>{label}</span>
       <span
-        className={`relative h-4 w-8 shrink-0 rounded-full transition-colors ${on ? "bg-accent" : "bg-white/15"}`}
+        className={`relative h-4 w-8 shrink-0 rounded-full transition-colors ${on ? "bg-primary" : "bg-mutedBg"}`}
       >
         <span
-          className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all ${on ? "left-4" : "left-0.5"}`}
+          className={`absolute top-0.5 h-3 w-3 rounded-full bg-primaryFg transition-all ${on ? "left-4" : "left-0.5"}`}
         />
       </span>
     </button>

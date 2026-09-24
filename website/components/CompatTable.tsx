@@ -36,10 +36,10 @@ export function CompatTable() {
         </p>
       </div>
 
-      <div className="glass mt-10 overflow-x-auto rounded-2xl">
+      <div className="card-glass mt-10 overflow-x-auto rounded-2xl">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
-            <tr className="border-b border-white/10 bg-white/[0.03] text-left">
+            <tr className="border-b border-border bg-card/40 text-left">
               <th className="p-4 font-medium">Technology</th>
               <th className="p-4 font-medium">DX11</th>
               <th className="p-4 font-medium">DX12</th>
@@ -50,7 +50,7 @@ export function CompatTable() {
           </thead>
           <tbody>
             {compatRows.map((row) => (
-              <tr key={row.tech} className="border-t border-white/5 align-top">
+              <tr key={row.tech} className="border-t border-border align-top">
                 <td className="p-4">
                   <div className="font-medium">{row.tech}</div>
                   <div className="mt-1 max-w-xs text-xs text-muted">{row.note}</div>

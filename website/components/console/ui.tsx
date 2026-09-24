@@ -9,7 +9,7 @@ export function Card({
   children: ReactNode;
   className?: string;
 }) {
-  return <div className={`glass rounded-2xl p-6 ${className}`}>{children}</div>;
+  return <div className={`card-glass rounded-2xl p-6 ${className}`}>{children}</div>;
 }
 
 export function SectionLabel({ children }: { children: ReactNode }) {
@@ -42,8 +42,8 @@ const toneClasses: Record<Tone, string> = {
   good: "border-good/40 bg-good/10 text-good",
   warn: "border-warn/40 bg-warn/10 text-warn",
   bad: "border-bad/40 bg-bad/10 text-bad",
-  accent: "border-accent/40 bg-accent/10 text-accentSoft",
-  muted: "border-white/10 bg-white/5 text-muted",
+  accent: "border-primary/40 bg-primary/10 text-primary",
+  muted: "border-border bg-mutedBg text-muted",
 };
 
 export function Pill({ tone = "muted", children }: { tone?: Tone; children: ReactNode }) {
@@ -77,7 +77,7 @@ export function Field({
 }
 
 const controlClass =
-  "w-full rounded-lg border border-border bg-black/40 px-3 py-2 text-sm text-white outline-none transition-colors focus:border-accent";
+  "w-full rounded-lg border border-input bg-card px-3 py-2 text-sm text-fg outline-none transition-colors focus:border-ring";
 
 export function TextInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={`${controlClass} ${props.className ?? ""}`} />;
@@ -109,7 +109,7 @@ export function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-white/10 accent-accent"
+        className="h-1.5 w-full cursor-pointer appearance-none rounded-full bg-mutedBg accent-primary"
       />
       <span className="w-12 shrink-0 text-right font-mono text-xs text-muted">
         {value.toFixed(2)}
@@ -135,10 +135,10 @@ export function Btn({
     "inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-45";
   const styles =
     variant === "primary"
-      ? "bg-accent text-white hover:bg-accentSoft shadow-glow"
+      ? "bg-primary text-primaryFg hover:bg-primary/90 shadow-glow"
       : variant === "danger"
         ? "border border-bad/40 text-bad hover:bg-bad/10"
-        : "border border-border text-white hover:border-accent";
+        : "border border-border text-fg hover:border-primary/30";
   return (
     <button type={type} onClick={onClick} disabled={disabled} className={`${base} ${styles}`}>
       {children}
@@ -156,10 +156,10 @@ export function KeyVal({
   tone?: "muted" | "bad";
 }) {
   return (
-    <div className="flex items-start justify-between gap-4 border-b border-white/5 py-2 last:border-0">
+    <div className="flex items-start justify-between gap-4 border-b border-border/60 py-2 last:border-0">
       <span className="shrink-0 text-xs text-muted">{k}</span>
       <span
-        className={`text-right text-xs ${tone === "bad" ? "text-bad" : tone === "muted" ? "text-faint" : "text-white"}`}
+        className={`text-right text-xs ${tone === "bad" ? "text-bad" : tone === "muted" ? "text-muted" : "text-fg"}`}
       >
         {v}
       </span>
@@ -177,8 +177,8 @@ export function Empty({
   action?: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-white/10 bg-white/[0.02] p-10 text-center">
-      <p className="font-display text-base font-semibold text-white">{title}</p>
+    <div className="rounded-2xl border border-dashed border-border bg-card/40 p-10 text-center">
+      <p className="font-display text-base font-semibold text-fg">{title}</p>
       <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-muted">{body}</p>
       {action ? <div className="mt-5 flex justify-center gap-3">{action}</div> : null}
     </div>

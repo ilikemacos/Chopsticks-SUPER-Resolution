@@ -45,7 +45,7 @@ export function SystemCard() {
     : [];
 
   return (
-    <div className="glass mx-auto mt-14 max-w-3xl rounded-2xl p-6 text-left">
+    <div className="card-glass mx-auto mt-14 max-w-3xl rounded-2xl p-6 text-left">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <p className="section-label">Your system</p>
         {system ? (
@@ -66,7 +66,7 @@ export function SystemCard() {
           <button
             onClick={scan}
             disabled={scanning}
-            className="shrink-0 rounded-xl bg-accent px-6 py-3 text-sm font-medium text-white shadow-glow transition-colors hover:bg-accentSoft disabled:opacity-50"
+            className="shrink-0 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primaryFg shadow-glow transition-colors hover:bg-primary/90 disabled:opacity-50"
           >
             {scanning ? "Scanning…" : "Scan my PC"}
           </button>
@@ -76,7 +76,7 @@ export function SystemCard() {
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="sm:col-span-2">
               <p className="font-mono text-[10px] uppercase tracking-widest text-faint">GPU</p>
-              <p className="mt-1 truncate font-display text-lg font-semibold text-white">
+              <p className="mt-1 truncate font-display text-lg font-semibold text-fg">
                 {system.glRenderer ?? "Not reported"}
               </p>
               <p className="mt-0.5 text-xs text-muted">
@@ -86,7 +86,7 @@ export function SystemCard() {
             </div>
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-faint">Display</p>
-              <p className="mt-1 font-display text-lg font-semibold text-white">
+              <p className="mt-1 font-display text-lg font-semibold text-fg">
                 {system.display.width} × {system.display.height}
               </p>
               <p className="mt-0.5 text-xs text-muted">
@@ -110,14 +110,14 @@ export function SystemCard() {
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Link
               href="/console#scan"
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accentSoft"
+              className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primaryFg transition-colors hover:bg-primary/90"
             >
               Full report
             </Link>
             <button
               onClick={scan}
               disabled={scanning}
-              className="rounded-lg border border-border px-4 py-2 text-sm text-white transition-colors hover:border-accent disabled:opacity-50"
+              className="rounded-lg border border-border px-4 py-2 text-sm text-fg transition-colors hover:border-primary/30 disabled:opacity-50"
             >
               {scanning ? "Scanning…" : "Re-scan"}
             </button>

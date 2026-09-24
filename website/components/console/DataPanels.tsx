@@ -144,7 +144,7 @@ export function ProfilesPanel({
               <Card key={p.name}>
                 <div className="mb-3 flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate font-display text-base font-semibold text-white">
+                    <p className="truncate font-display text-base font-semibold text-fg">
                       {p.name}
                     </p>
                     <p className="mt-0.5 truncate font-mono text-[11px] text-faint">
@@ -241,10 +241,10 @@ export function LibraryPanel({
           }
         />
       ) : (
-        <div className="glass overflow-hidden rounded-2xl">
+        <div className="card-glass overflow-hidden rounded-2xl">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/10 bg-white/[0.03] text-left">
+              <tr className="border-b border-border bg-card/40 text-left">
                 <th className="p-3.5 font-medium">Title</th>
                 <th className="p-3.5 font-medium">Source</th>
                 <th className="p-3.5 font-medium">Executable</th>
@@ -253,8 +253,8 @@ export function LibraryPanel({
             </thead>
             <tbody>
               {library.map((g) => (
-                <tr key={`${g.name}-${g.executablePath}`} className="border-t border-white/5">
-                  <td className="p-3.5 font-medium text-white">{g.name}</td>
+                <tr key={`${g.name}-${g.executablePath}`} className="border-t border-border">
+                  <td className="p-3.5 font-medium text-fg">{g.name}</td>
                   <td className="p-3.5">
                     <Pill>{g.source}</Pill>
                   </td>
@@ -350,7 +350,7 @@ export function InspectorPanel({
         <div className="grid gap-4 md:grid-cols-2">
           {reports.map((r) => (
             <Card key={`${r.name}-${r.path}`}>
-              <p className="font-display text-base font-semibold text-white">{r.name}</p>
+              <p className="font-display text-base font-semibold text-fg">{r.name}</p>
               <p className="mt-0.5 truncate font-mono text-[11px] text-faint">{r.path}</p>
               <div className="mt-4">
                 <KeyVal k="Graphics APIs" v={r.api.length ? r.api.join(", ") : "none found"} tone={r.api.length ? undefined : "muted"} />
@@ -465,7 +465,7 @@ export function BenchmarksPanel({
               <Card key={`${s.game}-${s.capturedAt}`}>
                 <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="font-display text-lg font-semibold text-white">{s.game}</p>
+                    <p className="font-display text-lg font-semibold text-fg">{s.game}</p>
                     <p className="mt-0.5 font-mono text-[11px] text-faint">
                       {s.capturedAt ? new Date(s.capturedAt).toLocaleString() : "no timestamp"}
                       {s.capturedBy ? ` · ${s.capturedBy}` : ""}
@@ -483,7 +483,7 @@ export function BenchmarksPanel({
                     return (
                       <div key={r.label}>
                         <div className="mb-1 flex items-baseline justify-between gap-3 text-xs">
-                          <span className="truncate text-white">
+                          <span className="truncate text-fg">
                             {r.label}
                             <span className="ml-2 font-mono text-[10px] text-faint">
                               {r.renderWidth}×{r.renderHeight} → {r.outputWidth}×{r.outputHeight}
@@ -501,9 +501,9 @@ export function BenchmarksPanel({
                             ) : null}
                           </span>
                         </div>
-                        <div className="h-2 overflow-hidden rounded-full bg-white/5">
+                        <div className="h-2 overflow-hidden rounded-full bg-mutedBg">
                           <div
-                            className="h-full rounded-full bg-accent"
+                            className="h-full rounded-full bg-primary"
                             style={{ width: `${Math.max(2, (r.avgFps / peak) * 100)}%` }}
                           />
                         </div>

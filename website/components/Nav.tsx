@@ -12,10 +12,10 @@ const links = [
 
 export function Nav() {
   return (
-    <header className="sticky top-0 z-50 border-b border-white/5 bg-bg/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 border-b border-border bg-bg/70 backdrop-blur-xl">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
         <Link href="/" className="flex items-center gap-2.5 font-display font-semibold">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-accent text-sm font-bold text-white shadow-glow">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-sm font-bold text-primaryFg shadow-glow">
             FX
           </span>
           <span className="tracking-tight">Universal FrameFX</span>
@@ -25,7 +25,7 @@ export function Nav() {
             <a
               key={l.href}
               href={l.href}
-              className="text-sm text-muted transition-colors hover:text-white"
+              className="text-sm text-muted transition-colors hover:text-fg"
             >
               {l.label}
             </a>
@@ -33,7 +33,7 @@ export function Nav() {
         </div>
         <a
           href={site.githubUrl}
-          className="rounded-lg border border-border px-3.5 py-1.5 text-sm text-white transition-colors hover:border-accent hover:text-accentSoft"
+          className="rounded-lg border border-border px-3.5 py-1.5 text-sm text-fg transition-colors hover:border-primary/30 hover:text-primary"
         >
           GitHub
         </a>

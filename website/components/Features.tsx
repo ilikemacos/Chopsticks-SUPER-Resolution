@@ -50,7 +50,7 @@ export function Features() {
         {features.map((f) => (
           <div
             key={f.title}
-            className="glass rounded-2xl p-6 transition-colors"
+            className="card-glass rounded-2xl p-6 transition-colors"
           >
             <h3 className="font-display text-lg font-semibold">{f.title}</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">{f.body}</p>

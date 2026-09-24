@@ -14,8 +14,8 @@ export default function ConsolePage() {
     <>
       <Nav />
       <main className="relative overflow-hidden">
-        <div className="orb float-a left-[-180px] top-[-220px] h-[420px] w-[420px] bg-accent/20" />
-        <div className="orb float-b right-[-200px] top-[120px] h-[380px] w-[380px] bg-good/8" />
+        <div className="orb animate-float left-[-180px] top-[-220px] h-[420px] w-[420px] bg-primary/20" />
+        <div className="orb animate-pulse-slow right-[-200px] top-[120px] h-[380px] w-[380px] bg-good/8" />
         <div className="relative z-10">
           <Console />
         </div>

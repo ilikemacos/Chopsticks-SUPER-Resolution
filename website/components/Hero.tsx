@@ -13,11 +13,11 @@ const tools = [
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="orb float-a left-[-140px] top-[-180px] h-[460px] w-[460px] bg-accent/25" />
-      <div className="orb float-b right-[-160px] top-[20px] h-[440px] w-[440px] bg-good/10" />
+      <div className="orb animate-pulse-slow left-[-140px] top-[-180px] h-[460px] w-[460px] bg-primary/20 blur-[120px]" />
+      <div className="orb animate-float right-[-160px] top-[20px] h-[440px] w-[440px] bg-primary/10" />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 pb-20 pt-24 text-center sm:px-6 sm:pt-32">
-        <div className="mx-auto mb-8 inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs text-muted backdrop-blur">
+        <div className="mx-auto mb-8 inline-flex items-center gap-2.5 rounded-full border border-good/30 bg-good/5 px-4 py-1.5 text-xs text-muted backdrop-blur">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-good opacity-60" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-good" />
@@ -27,7 +27,7 @@ export function Hero() {
           </span>
         </div>
 
-        <h1 className="mx-auto max-w-4xl font-display text-5xl font-bold leading-[1.02] tracking-tighter sm:text-7xl">
+        <h1 className="mx-auto max-w-4xl font-display text-5xl font-bold leading-[1.02] tracking-tight sm:text-7xl">
           <span className="text-gradient">Universal upscaling</span>
           <br />
           <span className="text-gradient">utility.</span>
@@ -42,19 +42,19 @@ export function Hero() {
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/console#scan"
-            className="rounded-xl bg-accent px-7 py-3.5 font-medium text-white shadow-glow transition-colors hover:bg-accentSoft"
+            className="rounded-xl bg-primary px-7 py-3.5 font-semibold text-primaryFg shadow-glow transition-colors hover:bg-primary/90"
           >
             Scan my PC
           </Link>
           <Link
             href="/console#upscaling"
-            className="rounded-xl border border-border px-7 py-3.5 font-medium text-white transition-colors hover:border-accent"
+            className="rounded-xl border border-border px-7 py-3.5 font-medium text-fg transition-colors hover:border-primary/30"
           >
             Universal Upscaling
           </Link>
           <a
             href={site.appExeUrl}
-            className="rounded-xl border border-border px-7 py-3.5 font-medium text-white transition-colors hover:border-accent"
+            className="rounded-xl border border-border px-7 py-3.5 font-medium text-fg transition-colors hover:border-primary/30"
           >
             Download .exe
           </a>
@@ -70,9 +70,9 @@ export function Hero() {
             <Link
               key={t.href}
               href={t.href}
-              className="glass rounded-xl px-3 py-4 text-center transition-colors"
+              className="card-glass rounded-2xl px-3 py-4 text-center transition-colors"
             >
-              <span className="block font-display text-sm font-semibold text-white">
+              <span className="block font-display text-sm font-semibold text-fg">
                 {t.label}
               </span>
               <span className="mt-0.5 block font-mono text-[10px] uppercase tracking-wider text-faint">

@@ -130,13 +130,13 @@ export function Console() {
   return (
     <div className="mx-auto max-w-6xl px-4 pb-24 pt-10 sm:px-6">
       {/* Tab bar */}
-      <div className="glass sticky top-[62px] z-30 mb-10 flex gap-1 overflow-x-auto rounded-xl p-1.5">
+      <div className="card-glass sticky top-[62px] z-30 mb-10 flex gap-1 overflow-x-auto rounded-xl p-1.5">
         {TABS.map((t) => (
           <button
             key={t.id}
             onClick={() => go(t.id)}
             className={`shrink-0 rounded-lg px-4 py-2 text-sm transition-colors ${
-              tab === t.id ? "bg-accent text-white" : "text-muted hover:bg-white/5 hover:text-white"
+              tab === t.id ? "bg-primary text-primaryFg" : "text-muted hover:bg-mutedBg hover:text-fg"
             }`}
           >
             {t.label}

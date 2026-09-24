@@ -38,7 +38,7 @@ export function Faq() {
           FAQ
         </h2>
       </div>
-      <div className="glass mx-auto mt-10 max-w-3xl divide-y divide-white/5 rounded-2xl">
+      <div className="card-glass mx-auto mt-10 max-w-3xl divide-y divide-border rounded-2xl">
         {faqs.map((f) => (
           <details key={f.q} className="group p-6">
             <summary className="cursor-pointer list-none font-display font-medium marker:content-none">

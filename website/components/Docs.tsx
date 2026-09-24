@@ -29,7 +29,7 @@ export function Docs() {
           <a
             key={d.title}
             href={d.href}
-            className="glass flex items-center justify-between rounded-xl px-5 py-4 transition-colors"
+            className="card-glass flex items-center justify-between rounded-xl px-5 py-4 transition-colors"
           >
             <span>{d.title}</span>
             <span className="text-muted">→</span>

@@ -46,7 +46,7 @@ export function ScanPanel({
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <div className="mb-3 flex items-center justify-between gap-3">
-                <p className="font-display text-base font-semibold text-white">Graphics</p>
+                <p className="font-display text-base font-semibold text-fg">Graphics</p>
                 <Pill tone={system.gpu ? "good" : "warn"}>
                   {system.gpu ? "Detected" : "Masked"}
                 </Pill>
@@ -67,7 +67,7 @@ export function ScanPanel({
             </Card>
 
             <Card>
-              <p className="mb-3 font-display text-base font-semibold text-white">System &amp; display</p>
+              <p className="mb-3 font-display text-base font-semibold text-fg">System &amp; display</p>
               <KeyVal k="Platform" v={system.platform} />
               <KeyVal k="CPU threads" v={system.cpuThreads ?? "unavailable"} tone={system.cpuThreads ? undefined : "muted"} />
               <KeyVal
@@ -83,7 +83,7 @@ export function ScanPanel({
           </div>
 
           <Card>
-            <p className="mb-1 font-display text-base font-semibold text-white">
+            <p className="mb-1 font-display text-base font-semibold text-fg">
               What your hardware can run
             </p>
             <p className="mb-4 text-xs text-muted">
@@ -94,11 +94,11 @@ export function ScanPanel({
               {availability.map(({ method, possible, verdict }) => (
                 <div
                   key={method.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3.5"
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card/40 p-3.5"
                 >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-medium text-white">{method.name}</span>
+                      <span className="text-sm font-medium text-fg">{method.name}</span>
                       <Pill tone={method.integration === "external" ? "accent" : method.integration === "native" ? "muted" : "bad"}>
                         {integrationLabel[method.integration]}
                       </Pill>
@@ -112,7 +112,7 @@ export function ScanPanel({
           </Card>
 
           <Card>
-            <p className="mb-1 font-display text-base font-semibold text-white">
+            <p className="mb-1 font-display text-base font-semibold text-fg">
               Not detectable from a browser
             </p>
             <p className="mb-4 text-xs text-muted">
@@ -127,7 +127,7 @@ export function ScanPanel({
             <div className="mt-5">
               <a
                 href={site.appExeUrl}
-                className="inline-flex items-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white shadow-glow transition-colors hover:bg-accentSoft"
+                className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primaryFg shadow-glow transition-colors hover:bg-primary/90"
               >
                 Get full detection ({site.appVersion})
               </a>
