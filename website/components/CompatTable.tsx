@@ -23,18 +23,21 @@ function Cell({ value }: { value: Support }) {
 
 export function CompatTable() {
   return (
-    <section id="compatibility" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h2 className="text-3xl font-semibold tracking-tight">Compatibility</h2>
-      <p className="mt-2 max-w-2xl text-muted">
+    <section id="compatibility" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+      <p className="section-label">Straight answers</p>
+      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
+        Compatibility
+      </h2>
+      <p className="mt-3 max-w-2xl text-muted">
         Populated only with technically verified, vendor-documented information.
         &ldquo;Game integration&rdquo; means the technology must be built into the
         game engine and cannot be added externally.
       </p>
 
-      <div className="mt-8 overflow-x-auto rounded-xl border border-border">
+      <div className="glass mt-8 overflow-x-auto rounded-2xl">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
-            <tr className="bg-surfaceAlt text-left">
+            <tr className="border-b border-white/10 bg-white/[0.03] text-left">
               <th className="p-4 font-medium">Technology</th>
               <th className="p-4 font-medium">DX11</th>
               <th className="p-4 font-medium">DX12</th>
@@ -45,7 +48,7 @@ export function CompatTable() {
           </thead>
           <tbody>
             {compatRows.map((row) => (
-              <tr key={row.tech} className="border-t border-border align-top">
+              <tr key={row.tech} className="border-t border-white/5 align-top">
                 <td className="p-4">
                   <div className="font-medium">{row.tech}</div>
                   <div className="mt-1 max-w-xs text-xs text-muted">{row.note}</div>

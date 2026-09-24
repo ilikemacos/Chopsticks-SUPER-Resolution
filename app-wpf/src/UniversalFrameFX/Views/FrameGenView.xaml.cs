@@ -15,7 +15,15 @@ public partial class FrameGenView : UserControl
 
     private void Build()
     {
+        Root.Children.Add(Ui.SectionLabel("Interpolation"));
         Root.Children.Add(Ui.Title("Frame generation"));
+        Root.Children.Add(new TextBlock
+        {
+            Text = "Honest state — it cannot be bolted onto a game that did not ship it.",
+            FontSize = 13,
+            Foreground = Ui.Brush("Muted"),
+            Margin = new Thickness(0, 0, 0, 18),
+        });
 
         foreach (var f in CapabilityService.FrameGenerators(AppState.PrimaryGpu, AppState.Platform))
         {

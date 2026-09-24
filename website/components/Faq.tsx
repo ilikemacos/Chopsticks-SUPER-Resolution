@@ -31,12 +31,15 @@ const faqs = [
 
 export function Faq() {
   return (
-    <section id="faq" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h2 className="text-3xl font-semibold tracking-tight">FAQ</h2>
-      <div className="mt-8 divide-y divide-border rounded-xl border border-border bg-surface">
+    <section id="faq" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+      <p className="section-label">Questions</p>
+      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
+        FAQ
+      </h2>
+      <div className="glass mt-8 divide-y divide-white/5 rounded-2xl">
         {faqs.map((f) => (
           <details key={f.q} className="group p-6">
-            <summary className="cursor-pointer list-none font-medium marker:content-none">
+            <summary className="cursor-pointer list-none font-display font-medium marker:content-none">
               <span className="flex items-center justify-between">
                 {f.q}
                 <span className="text-muted transition-transform group-open:rotate-45">

@@ -2,40 +2,85 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Universal FrameFX"
-        Height="720" Width="1080"
-        MinHeight="560" MinWidth="900"
+        Height="760" Width="1140"
+        MinHeight="600" MinWidth="940"
         WindowStartupLocation="CenterScreen"
         Background="{StaticResource Bg}"
         FontFamily="Segoe UI">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220" />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+        <!-- Ambient glow orbs (purely decorative) -->
+        <Canvas IsHitTestVisible="False" ClipToBounds="True">
+            <Ellipse Width="620" Height="620" Canvas.Left="-160" Canvas.Top="-260">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#3D5865F2" Offset="0" />
+                        <GradientStop Color="#005865F2" Offset="1" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+                <Ellipse.Effect>
+                    <BlurEffect Radius="120" />
+                </Ellipse.Effect>
+            </Ellipse>
+            <Ellipse Width="560" Height="560" Canvas.Right="-200" Canvas.Bottom="-240"
+                     HorizontalAlignment="Right">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#2600C758" Offset="0" />
+                        <GradientStop Color="#0000C758" Offset="1" />
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+                <Ellipse.Effect>
+                    <BlurEffect Radius="140" />
+                </Ellipse.Effect>
+            </Ellipse>
+        </Canvas>
 
-        <!-- Sidebar -->
-        <Border Grid.Column="0" Background="{StaticResource Sidebar}">
-            <DockPanel LastChildFill="True">
-                <StackPanel DockPanel.Dock="Top" Margin="20,22,20,10">
-                    <TextBlock Text="FrameFX" FontSize="22" FontWeight="Bold"
-                               Foreground="{StaticResource Accent}" />
-                    <TextBlock Text="Universal upscaling toolkit" FontSize="11.5"
-                               Foreground="{StaticResource Muted}" Margin="0,2,0,0" />
-                </StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="234" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-                <TextBlock DockPanel.Dock="Bottom" x:Name="VersionText"
-                           Margin="24,0,0,16" FontSize="11.5"
-                           Foreground="{StaticResource Muted}" />
+            <!-- Sidebar -->
+            <Border Grid.Column="0" Background="#800C0C11" BorderBrush="{StaticResource LineSoft}"
+                    BorderThickness="0,0,1,0">
+                <DockPanel LastChildFill="True">
+                    <StackPanel DockPanel.Dock="Top" Margin="22,24,20,14">
+                        <TextBlock Text="FrameFX" FontSize="23" FontWeight="Bold"
+                                   Foreground="{StaticResource HeadingBrush}" />
+                        <TextBlock Text="UNIVERSAL UPSCALING TOOLKIT"
+                                   FontFamily="{StaticResource Mono}" FontSize="9.5"
+                                   Foreground="{StaticResource Faint}" Margin="0,4,0,0" />
+                    </StackPanel>
 
-                <StackPanel x:Name="NavPanel" DockPanel.Dock="Top" Margin="0,10,0,0" />
-            </DockPanel>
-        </Border>
+                    <StackPanel DockPanel.Dock="Bottom" Margin="24,0,20,18">
+                        <Border x:Name="UpdatePill" Visibility="Collapsed" Margin="0,0,0,12"
+                                Background="{StaticResource AccentSoft}" CornerRadius="8"
+                                BorderBrush="{StaticResource Accent}" BorderThickness="1" Padding="12,10">
+                            <StackPanel>
+                                <TextBlock x:Name="UpdatePillText" FontSize="12"
+                                           Foreground="{StaticResource Text}" />
+                                <Button x:Name="UpdateButton" Content="Update now"
+                                        Style="{StaticResource PrimaryButton}" Height="30"
+                                        Margin="0,8,0,0" Click="Update_Click" />
+                                <TextBlock x:Name="UpdateStatus" FontSize="10.5" Margin="0,6,0,0"
+                                           Foreground="{StaticResource Muted}" Visibility="Collapsed" />
+                            </StackPanel>
+                        </Border>
+                        <TextBlock x:Name="VersionText" FontFamily="{StaticResource Mono}"
+                                   FontSize="10.5" Foreground="{StaticResource Faint}" />
+                    </StackPanel>
 
-        <!-- Content -->
-        <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
-                      Padding="32,28,32,28">
-            <ContentControl x:Name="PageHost" />
-        </ScrollViewer>
+                    <StackPanel x:Name="NavPanel" DockPanel.Dock="Top" Margin="0,10,0,0" />
+                </DockPanel>
+            </Border>
+
+            <!-- Content -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto"
+                          Padding="36,30,36,36">
+                <ContentControl x:Name="PageHost" />
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>

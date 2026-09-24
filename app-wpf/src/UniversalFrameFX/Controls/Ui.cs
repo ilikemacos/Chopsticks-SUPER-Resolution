@@ -10,13 +10,26 @@ public static class Ui
     public static SolidColorBrush Brush(string key)
         => (SolidColorBrush)Application.Current.FindResource(key);
 
+    public static Brush GradientBrush(string key)
+        => (Brush)Application.Current.FindResource(key);
+
     public static TextBlock Title(string text) => new()
     {
         Text = text,
-        FontSize = 26,
-        FontWeight = FontWeights.SemiBold,
-        Foreground = Brush("Text"),
-        Margin = new Thickness(0, 0, 0, 16),
+        FontSize = 32,
+        FontWeight = FontWeights.Bold,
+        Foreground = GradientBrush("HeadingBrush"),
+        Margin = new Thickness(0, 0, 0, 6),
+    };
+
+    /// <summary>Small uppercase mono label, e.g. "DETECTED HARDWARE".</summary>
+    public static TextBlock SectionLabel(string text) => new()
+    {
+        Text = text.ToUpperInvariant(),
+        FontFamily = (FontFamily)Application.Current.FindResource("Mono"),
+        FontSize = 11,
+        Foreground = Brush("Accent"),
+        Margin = new Thickness(0, 0, 0, 10),
     };
 
     public static TextBlock Heading(string text) => new()

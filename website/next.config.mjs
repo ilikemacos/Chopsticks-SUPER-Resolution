@@ -6,7 +6,7 @@ const rawBase =
 // keeps the download link same-origin; GitHub answers with a redirect to its
 // CDN, so this stays lightweight.
 const appExeUrl =
-  "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/download/v0.1.0/UniversalFrameFX.exe";
+  "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/download/v0.2.0/UniversalFrameFX.exe";
 
 const nextConfig = {
   reactStrictMode: true,

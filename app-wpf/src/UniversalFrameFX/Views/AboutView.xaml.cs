@@ -15,6 +15,7 @@ public partial class AboutView : UserControl
 
     private void Build()
     {
+        Root.Children.Add(Ui.SectionLabel("Universal FrameFX"));
         Root.Children.Add(Ui.Title("About"));
 
         var stack = new StackPanel();
@@ -38,6 +39,10 @@ public partial class AboutView : UserControl
         stack.Children.Add(Para(
             "It never fakes support for a graphics technology, never fabricates FPS, and only modifies "
             + "a game's own folder after taking a backup. It refuses to touch anti-cheat-protected folders."));
+
+        stack.Children.Add(Para(
+            "GPU switching writes the per-app graphics preference Windows itself uses, and the app "
+            + "checks GitHub for newer releases on startup so updates are one click."));
 
         stack.Children.Add(new TextBlock
         {

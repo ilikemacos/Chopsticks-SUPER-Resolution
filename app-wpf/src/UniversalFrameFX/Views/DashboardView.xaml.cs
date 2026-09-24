@@ -15,7 +15,15 @@ public partial class DashboardView : UserControl
 
     private void Build()
     {
+        Root.Children.Add(Ui.SectionLabel("Overview"));
         Root.Children.Add(Ui.Title("Dashboard"));
+        Root.Children.Add(new TextBlock
+        {
+            Text = "Your hardware and what it can honestly run.",
+            FontSize = 13,
+            Foreground = Ui.Brush("Muted"),
+            Margin = new Thickness(0, 0, 0, 18),
+        });
 
         var gpu = AppState.PrimaryGpu;
         var plat = AppState.Platform;
@@ -28,7 +36,7 @@ public partial class DashboardView : UserControl
 
         // GPU card
         var gpuStack = new StackPanel();
-        gpuStack.Children.Add(Ui.Muted("PRIMARY GPU"));
+        gpuStack.Children.Add(Ui.SectionLabel("Primary GPU"));
         if (gpu != null)
         {
             gpuStack.Children.Add(new TextBlock
@@ -59,7 +67,7 @@ public partial class DashboardView : UserControl
 
         // Platform card
         var platStack = new StackPanel();
-        platStack.Children.Add(Ui.Muted("PLATFORM"));
+        platStack.Children.Add(Ui.SectionLabel("Platform"));
         platStack.Children.Add(new TextBlock
         {
             Text = plat.Win11 ? "Windows 11" : (plat.Build > 0 ? "Windows (older)" : "Unknown"),

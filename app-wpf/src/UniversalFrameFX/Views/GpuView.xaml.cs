@@ -15,7 +15,15 @@ public partial class GpuView : UserControl
 
     private void Build()
     {
+        Root.Children.Add(Ui.SectionLabel("Hardware"));
         Root.Children.Add(Ui.Title("Detected hardware"));
+        Root.Children.Add(new TextBlock
+        {
+            Text = "Read from WMI and the driver — never guessed from the brand.",
+            FontSize = 13,
+            Foreground = Ui.Brush("Muted"),
+            Margin = new Thickness(0, 0, 0, 18),
+        });
 
         if (AppState.Gpus.Count == 0)
         {

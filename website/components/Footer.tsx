@@ -2,7 +2,7 @@ import { site } from "@/lib/site";
 
 export function Footer() {
   return (
-    <footer className="border-t border-border">
+    <footer className="border-t border-white/5">
       <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-4 py-10 text-sm text-muted sm:flex-row sm:px-6">
         <p>
           Universal FrameFX — MIT licensed. Not affiliated with AMD, Intel or

@@ -13,9 +13,12 @@ const docs = [
 
 export function Docs() {
   return (
-    <section id="docs" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
-      <h2 className="text-3xl font-semibold tracking-tight">Documentation</h2>
-      <p className="mt-2 max-w-2xl text-muted">
+    <section id="docs" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
+      <p className="section-label">Read the details</p>
+      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
+        Documentation
+      </h2>
+      <p className="mt-3 max-w-2xl text-muted">
         Technically accurate explanations, no marketing claims that cannot be
         demonstrated.
       </p>
@@ -24,7 +27,7 @@ export function Docs() {
           <a
             key={d.title}
             href={d.href}
-            className="flex items-center justify-between rounded-lg border border-border bg-surface px-5 py-4 transition-colors hover:border-accent/60"
+            className="glass flex items-center justify-between rounded-xl px-5 py-4 transition-colors"
           >
             <span>{d.title}</span>
             <span className="text-muted">→</span>

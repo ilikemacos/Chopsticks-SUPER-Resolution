@@ -20,7 +20,15 @@ public partial class UpscalingView : UserControl
 
     private void Build()
     {
+        Root.Children.Add(Ui.SectionLabel("Super resolution"));
         Root.Children.Add(Ui.Title("Upscaling"));
+        Root.Children.Add(new TextBlock
+        {
+            Text = "What each upscaler can honestly do on your hardware.",
+            FontSize = 13,
+            Foreground = Ui.Brush("Muted"),
+            Margin = new Thickness(0, 0, 0, 18),
+        });
 
         var gpu = AppState.PrimaryGpu;
         foreach (var u in CapabilityService.Upscalers(gpu, AppState.Platform))
