@@ -24,17 +24,19 @@ function Cell({ value }: { value: Support }) {
 export function CompatTable() {
   return (
     <section id="compatibility" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-      <p className="section-label">Straight answers</p>
-      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
-        Compatibility
-      </h2>
-      <p className="mt-3 max-w-2xl text-muted">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="section-label">Straight answers</p>
+        <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
+          Compatibility
+        </h2>
+        <p className="mx-auto mt-4 text-muted">
         Populated only with technically verified, vendor-documented information.
         &ldquo;Game integration&rdquo; means the technology must be built into the
         game engine and cannot be added externally.
-      </p>
+        </p>
+      </div>
 
-      <div className="glass mt-8 overflow-x-auto rounded-2xl">
+      <div className="glass mt-10 overflow-x-auto rounded-2xl">
         <table className="w-full min-w-[720px] border-collapse text-sm">
           <thead>
             <tr className="border-b border-white/10 bg-white/[0.03] text-left">

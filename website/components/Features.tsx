@@ -36,14 +36,16 @@ const features = [
 export function Features() {
   return (
     <section id="features" className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6">
-      <p className="section-label">What it does</p>
-      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
-        Features
-      </h2>
-      <p className="mt-3 max-w-2xl text-muted">
-        A serious, transparent tool — not a marketing wrapper around fake FPS
-        numbers.
-      </p>
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="section-label">What it does</p>
+        <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
+          Features
+        </h2>
+        <p className="mx-auto mt-4 text-muted">
+          A serious, transparent tool — not a marketing wrapper around fake FPS
+          numbers.
+        </p>
+      </div>
       <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((f) => (
           <div

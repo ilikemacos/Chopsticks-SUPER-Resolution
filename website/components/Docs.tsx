@@ -14,15 +14,17 @@ const docs = [
 export function Docs() {
   return (
     <section id="docs" className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
-      <p className="section-label">Read the details</p>
-      <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
-        Documentation
-      </h2>
-      <p className="mt-3 max-w-2xl text-muted">
-        Technically accurate explanations, no marketing claims that cannot be
-        demonstrated.
-      </p>
-      <div className="mt-8 grid gap-3 sm:grid-cols-2">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="section-label">Read the details</p>
+        <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient sm:text-5xl">
+          Documentation
+        </h2>
+        <p className="mx-auto mt-4 text-muted">
+          Technically accurate explanations, no marketing claims that cannot be
+          demonstrated.
+        </p>
+      </div>
+      <div className="mt-10 grid gap-3 sm:grid-cols-2">
         {docs.map((d) => (
           <a
             key={d.title}
