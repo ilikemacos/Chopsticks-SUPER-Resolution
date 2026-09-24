@@ -8,17 +8,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        bg: "#09090c",
-        surface: "#141419",
-        surfaceAlt: "#1c1c23",
-        border: "#ffffff17",
+        bg: "#0a0a0b",
+        surface: "#17171c",
+        surfaceAlt: "#1f1f27",
+        border: "#26262e",
         accent: "#5865f2",
         accentSoft: "#8b93f7",
         good: "#00c758",
         warn: "#f5b84b",
         bad: "#f0616d",
-        muted: "#9a9aa6",
-        faint: "#66666f",
+        muted: "#8a8a95",
+        faint: "#5c5c66",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
