@@ -1,0 +1,4 @@
+# Development-only. Never shipped in the desktop app, which publishes as a
+# self-contained single-file .NET binary with no Python dependency.
+numpy>=1.26
+pillow>=10.0

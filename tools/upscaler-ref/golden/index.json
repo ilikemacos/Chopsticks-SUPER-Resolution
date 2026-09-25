@@ -1,0 +1,71 @@
+{
+ "tolerance": 0.00392156862745098,
+ "note": "Reference uses exact reciprocals; GPU ports use fast approximations, so compare within tolerance, not bit-exactly.",
+ "cases": [
+  {
+   "name": "edge_vertical_2x",
+   "file": "edge_vertical_2x.json",
+   "in": [
+    8,
+    8
+   ],
+   "out": [
+    16,
+    16
+   ],
+   "sharpnessStops": 0.25
+  },
+  {
+   "name": "edge_diagonal_1_5x",
+   "file": "edge_diagonal_1_5x.json",
+   "in": [
+    12,
+    12
+   ],
+   "out": [
+    18,
+    18
+   ],
+   "sharpnessStops": 0.25
+  },
+  {
+   "name": "gradient_1_333x",
+   "file": "gradient_1_333x.json",
+   "in": [
+    12,
+    9
+   ],
+   "out": [
+    16,
+    12
+   ],
+   "sharpnessStops": 0.25
+  },
+  {
+   "name": "checker_2x",
+   "file": "checker_2x.json",
+   "in": [
+    8,
+    8
+   ],
+   "out": [
+    16,
+    16
+   ],
+   "sharpnessStops": 0.0
+  },
+  {
+   "name": "noise_1_333x",
+   "file": "noise_1_333x.json",
+   "in": [
+    12,
+    12
+   ],
+   "out": [
+    16,
+    16
+   ],
+   "sharpnessStops": 0.5
+  }
+ ]
+}
