@@ -63,7 +63,7 @@ export interface Method {
 export const METHODS: Method[] = [
   {
     id: "csr",
-    name: "CSR (Chopsticks Super Resolution)",
+    name: "CSR 1.0 (Chopsticks Super Resolution)",
     kind: "spatial",
     integration: "external",
     // The upscaler is implemented and tested against a pinned reference, but the
@@ -72,7 +72,7 @@ export const METHODS: Method[] = [
     // that runs, "works on any app" describes the design, not the build.
     stage: "preview",
     note:
-      "Our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS design: a " +
+      "Our own proprietary spatial upscaler (CSR 1.0), a clean-room take on AMD FSR 1's EASU + RCAS design: a " +
       "16-tap edge-adaptive resolve with a Rec.709 luma direction estimate and a " +
       "deringing clamp, then contrast-limited sharpening that adapts to local " +
       "variance. Measured against the same references, it is +1.48 dB PSNR over " +

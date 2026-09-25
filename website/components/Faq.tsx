@@ -4,8 +4,8 @@ const faqs = [
     a: "Not FSR 2/3/4 or XeSS, and any tool that claims to is misleading you: temporal upscalers need motion vectors, depth buffers and jitter offsets that only the game engine produces. The kind that can work on any window is spatial, because it operates on a finished frame — that is what CSR is, and it is the only upscaler here that needs no game support. To be clear about the current state: CSR itself is finished and tested, but applying it to a live window is not, so today the app runs it on an image you choose. Everything else Universal FrameFX does is configure the upscalers a game already ships, and — where a public, redistributable wrapper DLL exists — drop it into a specific game folder with a full backup.",
   },
   {
-    q: "What is CSR, and is it as good as FSR 2 or DLSS?",
-    a: "CSR (Chopsticks Super Resolution) is our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS design and reimplemented from its MIT-licensed source: a 16-tap edge-adaptive resolve with a deringing clamp, then contrast-limited sharpening that adapts to local variance. Against the same references it measures +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. It is not comparable to FSR 2 or DLSS: those reconstruct detail from previous frames, and no spatial filter can recover detail the game never rendered. Expect clearly better than a plain resample, not native quality. It also costs GPU time and creates no frames, so no FPS figure attaches to it.",
+    q: "What is CSR 1.0, and is it as good as FSR 2 or DLSS?",
+    a: "CSR 1.0 (Chopsticks Super Resolution) is our own proprietary spatial upscaler, a clean-room re-implementation of AMD FSR 1's EASU + RCAS design. FSR 1 is MIT-licensed, which permits a proprietary derivative as long as its notice is retained (it is); CSR itself is not open source. Technically it is a 16-tap edge-adaptive resolve with a deringing clamp, then contrast-limited sharpening that adapts to local variance. Against the same references it measures +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. It is not comparable to FSR 2 or DLSS: those reconstruct detail from previous frames, and no spatial filter can recover detail the game never rendered. Expect clearly better than a plain resample, not native quality. It also costs GPU time and creates no frames, so no FPS figure attaches to it.",
   },
   {
     q: "Why is CSR based on FSR 1 and not on XeSS?",
@@ -29,7 +29,7 @@ const faqs = [
   },
   {
     q: "Is it really open source?",
-    a: "Yes — MIT licensed. No proprietary AMD/Intel/NVIDIA binaries are bundled. If a vendor SDK is needed, the app explains how to obtain it legally.",
+    a: "The Universal FrameFX app and tooling are MIT-licensed and open source. The one exception is CSR 1.0, our own upscaler, which is proprietary and licensed separately (it is a clean-room derivative of MIT-licensed AMD FSR 1, whose notice is retained). No proprietary AMD/Intel/NVIDIA binaries are bundled; if a vendor SDK is needed, the app explains how to obtain it legally.",
   },
   {
     q: "Does it show real performance numbers?",

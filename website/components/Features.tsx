@@ -4,8 +4,8 @@ const features = [
     body: "NVIDIA, AMD and Intel — model, VRAM and driver read from WMI and the driver, and the DirectX feature level measured by actually creating a device rather than looking for DLLs on disk. When the architecture cannot be confirmed it says so instead of guessing.",
   },
   {
-    title: "CSR — our own upscaler",
-    body: "Chopsticks Super Resolution: a 16-tap edge-adaptive resolve with contrast-limited, variance-adaptive sharpening, derived from FSR 1's EASU + RCAS. Measured at +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. Needing no engine data, it is the one upscaler here that could be applied from outside a game — today it runs on an image you choose, and the live window-capture path is written but not yet verified.",
+    title: "CSR 1.0 — our own upscaler",
+    body: "Chopsticks Super Resolution 1.0 — our own proprietary spatial upscaler (a clean-room take on FSR 1's EASU + RCAS; FSR 1 is MIT and its notice is retained). A 16-tap edge-adaptive resolve with contrast-limited, variance-adaptive sharpening. Measured at +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. Needing no engine data, it is the one upscaler here that could be applied from outside a game — today it runs on an image you choose, and the live window-capture path is written but not yet verified.",
   },
   {
     title: "Unified upscaling front-end",

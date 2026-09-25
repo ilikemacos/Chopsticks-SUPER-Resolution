@@ -65,3 +65,10 @@ Image Upscale(const Image& src, int outWidth, int outHeight, const Options& o = 
 Image Bilinear(const Image& src, int outWidth, int outHeight);
 
 }
+
+namespace ufx::csr {
+// CSR 1.0 is proprietary; see csr/LICENSE. Derived from AMD FSR 1 (MIT,
+// attribution retained in csr/NOTICE.md).
+inline constexpr const char* kVersion = "1.0.0";
+inline constexpr const char* kVersionDisplay = "1.0";
+}

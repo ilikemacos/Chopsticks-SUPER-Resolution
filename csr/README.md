@@ -1,7 +1,13 @@
-# CSR — Chopsticks Super Resolution
+# CSR — Chopsticks Super Resolution 1.0
 
 A spatial upscaler derived from FSR 1: resolves a single finished frame, needs no
 motion vectors, depth or jitter, and uses no machine learning.
+
+**CSR 1.0 is proprietary** — see [`LICENSE`](LICENSE). It is licensed separately
+from the rest of Universal FrameFX (MIT). It is derived from AMD FSR 1 (MIT), and
+that attribution is retained in [`NOTICE.md`](NOTICE.md) as the MIT license
+requires; a proprietary derivative is permitted only while that notice ships with
+it.
 
 `ref/` holds the Python reference implementation, which is the **specification**.
 The shipping C#/HLSL code will be a port verified against it. Python is a

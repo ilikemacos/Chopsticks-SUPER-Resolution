@@ -1,0 +1,26 @@
+CSR — Chopsticks Super Resolution 1.0
+Proprietary License
+
+Copyright (c) 2026 Universal FrameFX. All rights reserved.
+
+CSR 1.0 (the "Software") — the Chopsticks Super Resolution upscaler, comprising
+its algorithm, source, compiled forms, and shaders under csr/ — is proprietary.
+It is NOT open source and is NOT covered by the MIT license that applies to the
+rest of this repository.
+
+No permission is granted to use, copy, modify, merge, publish, distribute,
+sublicense, or sell copies of the Software, except as expressly authorized in
+writing by the copyright holder.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+
+-------------------------------------------------------------------------------
+Attribution (required, non-optional)
+
+CSR is derived from AMD FidelityFX Super Resolution 1 (EASU/RCAS), which AMD
+publishes under the MIT license. MIT permits proprietary derivatives provided the
+original copyright and permission notices are retained. Those notices are
+reproduced in NOTICE.md and MUST ship with CSR in every form. Making CSR
+proprietary does not remove that obligation.
