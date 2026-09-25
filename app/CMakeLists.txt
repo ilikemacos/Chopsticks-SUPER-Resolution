@@ -18,6 +18,8 @@ set(UFX_CORE_SOURCES
     upscaling/csr/ImageIo.h
     cli/UpscaleCommand.cpp
     cli/UpscaleCommand.h
+    cli/LiveCommand.cpp
+    cli/LiveCommand.h
     upscaling/FsrUpscaler.cpp
     upscaling/FsrUpscaler.h
     upscaling/XessUpscaler.cpp
@@ -76,3 +78,10 @@ endif()
 # upscale a file.
 add_executable(ufx-upscale cli/UpscaleMain.cpp)
 target_link_libraries(ufx-upscale PRIVATE ufx_core)
+
+# ufx-live: the CSR real-time loop (capture -> upscale -> present), CPU reference.
+# The shipping real-time path is the GPU compute shader in csr/src/Csr.Capture,
+# which needs a GPU; this runs the same loop over synthetic frames on any machine
+# and reports the sustained per-frame cost. Ships beside ufx-upscale.
+add_executable(ufx-live cli/LiveMain.cpp)
+target_link_libraries(ufx-live PRIVATE ufx_core)

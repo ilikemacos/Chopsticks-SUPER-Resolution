@@ -38,6 +38,11 @@ jobs:
           # ufx-upscale.exe is the actual CSR file upscaler. Shipping it is what
           # makes "it upscales" true of the release, not just of the source tree.
           Copy-Item build/app/Release/ufx-upscale.exe $stage/
+          # ufx-live.exe is the CSR real-time loop (capture -> upscale -> present),
+          # CPU reference. It runs the same core the GPU real-time path dispatches
+          # and reports the sustained per-frame cost, so the release carries a
+          # runnable, measurable real-time demonstration and not just a claim.
+          Copy-Item build/app/Release/ufx-live.exe $stage/
           Copy-Item README.md, LICENSE $stage/
           Copy-Item installer/uninstall.ps1 $stage/
           Copy-Item -Recurse examples $stage/examples

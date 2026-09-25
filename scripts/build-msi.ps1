@@ -61,6 +61,16 @@ $stage = Join-Path ([IO.Path]::GetTempPath()) ("ufx_msi_" + [Guid]::NewGuid().To
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 try {
     Copy-Item $ExePath (Join-Path $stage "UniversalFrameFX.exe") -Force
+    # The CSR command-line tools live beside the app exe in the build output.
+    # ufx-upscale.exe is what the app (and the PowerShell edition) shells out to
+    # in order to actually upscale a file; ufx-live.exe is the CSR real-time
+    # loop. Ship both, or an MSI install cannot run CSR at all.
+    $exeDir = Split-Path -Parent $ExePath
+    foreach ($tool in @("ufx-upscale.exe", "ufx-live.exe")) {
+        $tp = Join-Path $exeDir $tool
+        if (Test-Path $tp) { Copy-Item $tp $stage -Force }
+        else { Write-Host "    warning: $tool not found beside the app exe; MSI will omit it." -ForegroundColor Yellow }
+    }
     foreach ($f in @("README.md", "LICENSE")) {
         $p = Join-Path $root $f
         if (Test-Path $p) { Copy-Item $p $stage -Force }

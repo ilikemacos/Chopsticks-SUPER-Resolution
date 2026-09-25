@@ -143,7 +143,42 @@ Both are implemented, for different jobs:
 | `CsrPresenter` (swapchain present) | **compiles** — DXGI flip-model, copies the upscaled texture to the backbuffer 1:1 |
 | `Csr.LiveUpscale` runnable host | **compiles** — WinForms window + picker/`--window`, wires capture -> CSR -> present |
 | HLSL shaders | **compiled and executed** — 9 cases x 2 passes match the golden vectors, worst deviation 4.4e-6 vs 1/255 tolerance (`tools/shader-verify`) |
-| End-to-end on real hardware | **not done** — needs a Windows machine |
+| `ufx-live` CPU reference loop | **runs** — the same capture -> upscale -> present loop over synthetic frames, on any machine, measured (see below) |
+| End-to-end on real hardware (GPU) | **not done** — needs a Windows machine |
+
+## The runnable CPU reference: `ufx-live`
+
+The GPU path above cannot be executed without a Windows GPU, so the frame loop
+itself was never proven to run end to end — only to compile. `ufx-live` closes
+that gap on any machine. It runs the **same** loop the GPU path runs per
+`FrameArrived` — capture a frame, upscale it with the CSR core, hand it to a
+present sink — except the source is synthetic (a panning scene with moving hard
+edges and mid-contrast detail, so the resolve and adaptive sharpen both do real
+work every frame) and the upscale runs on the CPU port of the core. It reports
+the sustained per-frame cost and throughput, and can dump the final frame as
+proof the loop produced real pixels.
+
+```bash
+ufx-live --src 1280x720 --quality Quality --frames 120 --save-last out.png
+```
+
+Measured in this container (a headless CPU box, `ufx_core` Release, the core's
+row-parallel resolve/sharpen across the available cores):
+
+| source → output | upscale/frame | loop rate |
+|---|---|---|
+| 1280×720 → 1920×1080 | ~178 ms | ~5 fps |
+| 1920×1080 → 2496×1404 | ~300 ms | ~3 fps |
+
+Those are **CPU** numbers and are deliberately reported as-is: the CPU path is a
+correctness and throughput reference, **not** the real-time target. The shipping
+real-time path is the GPU compute shader, which is fetch-bound and expected to be
+one to three orders of magnitude cheaper per frame (`CsrGpuPipeline` carries the
+timestamp queries to measure exactly that once hardware is available). What
+`ufx-live` establishes now is that the loop is correct and complete — every tick
+yields a correctly sized, valid, frame-to-frame-varying upscaled image
+(`tests/test_live.cpp` guards this) — so the only thing left unproven on the
+real-time path is GPU execution, not the pipeline shape.
 
 The shader maths is now verified by execution, not just compilation: see
 `tools/shader-verify`, which compiles the HLSL to SPIR-V and runs it on llvmpipe,
