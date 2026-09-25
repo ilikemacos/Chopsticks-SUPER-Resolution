@@ -56,13 +56,18 @@ public partial class GpuView : UserControl
             stack.Children.Add(header);
 
             stack.Children.Add(Ui.KeyValue("Vendor", g.Vendor));
-            stack.Children.Add(Ui.KeyValue("Architecture", g.Arch));
+            stack.Children.Add(Ui.KeyValue("Architecture", g.ArchDisplay));
             stack.Children.Add(Ui.KeyValue("VRAM", g.VramDisplay));
             stack.Children.Add(Ui.KeyValue("Driver version", string.IsNullOrEmpty(g.DriverVersion) ? "unknown" : g.DriverVersion));
             stack.Children.Add(Ui.KeyValue("PCI IDs", $"VEN_{g.VendorId:X4}  DEV_{g.DeviceId:X4}"));
-            stack.Children.Add(Ui.KeyValue("DirectX 11", plat.DX11 ? "Supported" : "Not detected", plat.DX11 ? "Ok" : "Bad"));
-            stack.Children.Add(Ui.KeyValue("DirectX 12", plat.DX12 ? "Supported (Windows 11 runtime)" : "Not detected", plat.DX12 ? "Ok" : "Bad"));
-            stack.Children.Add(Ui.KeyValue("Vulkan", plat.Vulkan ? "Loader present" : "Not detected", plat.Vulkan ? "Ok" : "Muted"));
+            var dx11Text = plat.DX11
+                ? (string.IsNullOrEmpty(plat.Dx11FeatureLevel)
+                    ? "Device created" : $"Feature level {plat.Dx11FeatureLevel}")
+                : "No device";
+            stack.Children.Add(Ui.KeyValue("DirectX 11", dx11Text, plat.DX11 ? "Ok" : "Bad"));
+            stack.Children.Add(Ui.KeyValue("DirectX 12", plat.DX12 ? "Device created" : "No device",
+                                           plat.DX12 ? "Ok" : "Bad"));
+            stack.Children.Add(Ui.KeyValue("Vulkan", plat.VulkanLoaderPresent ? "Loader present" : "Not detected", plat.VulkanLoaderPresent ? "Ok" : "Muted"));
 
             Root.Children.Add(Ui.Card(stack));
         }

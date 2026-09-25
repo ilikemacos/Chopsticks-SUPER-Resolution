@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Win32;
@@ -143,21 +144,95 @@ public partial class ProfilesView : UserControl
             return;
         }
 
-        var meta = BackupService.Backup(NameBox.Text.Trim(), dir);
-        MessageBox.Show(
-            $"Backed up {meta.Files.Count} config file(s) to snapshot {meta.Id}.",
-            "Universal FrameFX");
+        // Fall back to the folder name rather than writing an empty GameName,
+        // which made snapshots unidentifiable in the restore prompt.
+        var gameName = NameBox.Text.Trim();
+        if (string.IsNullOrEmpty(gameName))
+            gameName = new DirectoryInfo(dir).Name;
+
+        RunBackup(gameName, dir);
+    }
+
+    /// <summary>
+    /// Walks the game folder off the UI thread. A large install has tens of
+    /// thousands of files, and doing this inline froze the window.
+    /// </summary>
+    private async void RunBackup(string gameName, string dir)
+    {
+        IsEnabled = false;
+        try
+        {
+            var meta = await Task.Run(() => BackupService.Backup(gameName, dir));
+            MessageBox.Show(
+                meta.Files.Count == 0
+                    ? $"No config files (.ini/.cfg/.json/.xml) found in:\n{dir}\n\n"
+                      + "Nothing was backed up."
+                    : $"Backed up {meta.Files.Count} config file(s) to snapshot {meta.Id}.",
+                "Universal FrameFX");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException
+                                  or PathTooLongException)
+        {
+            MessageBox.Show($"Backup failed: {ex.Message}", "Universal FrameFX",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+        finally
+        {
+            IsEnabled = true;
+        }
     }
 
     private void Restore_Click(object sender, RoutedEventArgs e)
     {
-        var id = BackupService.LatestSnapshotId();
-        if (id == null)
+        // This used to restore BackupService.LatestSnapshotId() with no
+        // confirmation, which writes into whichever GameDir the newest snapshot
+        // recorded — potentially a different game than the one on screen. It
+        // must name the target and be confirmed.
+        var snapshots = BackupService.ListSnapshots();
+        if (snapshots.Count == 0)
         {
             MessageBox.Show("No backups yet.", "Universal FrameFX");
             return;
         }
-        BackupService.Restore(id);
-        MessageBox.Show($"Restored snapshot {id}.", "Universal FrameFX");
+
+        // Prefer a snapshot for the profile currently being edited; otherwise
+        // fall back to the newest, but say so plainly in the prompt.
+        var name = NameBox.Text.Trim();
+        var match = snapshots.FirstOrDefault(sn =>
+            !string.IsNullOrEmpty(name)
+            && string.Equals(sn.GameName, name, StringComparison.OrdinalIgnoreCase));
+        var chosen = match ?? snapshots[0];
+
+        var lead = match is not null
+            ? $"Restore the most recent backup for \"{chosen.GameName}\"?"
+            : $"No backup matches \"{(string.IsNullOrEmpty(name) ? "(no profile name)" : name)}\".\n"
+              + "The most recent backup of any game will be restored instead.";
+
+        var confirm = MessageBox.Show(
+            $"{lead}\n\n"
+            + $"Snapshot:   {chosen.Id}\n"
+            + $"Game:       {(string.IsNullOrWhiteSpace(chosen.GameName) ? "(unnamed)" : chosen.GameName)}\n"
+            + $"Taken:      {(chosen.TakenUtc == DateTime.MinValue ? "unknown" : chosen.TakenUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))}\n"
+            + $"Files:      {chosen.Files.Count}\n\n"
+            + $"These files will be OVERWRITTEN in:\n{chosen.GameDir}\n\n"
+            + "This cannot be undone.",
+            "Confirm restore", MessageBoxButton.OKCancel, MessageBoxImage.Warning,
+            MessageBoxResult.Cancel);
+
+        if (confirm != MessageBoxResult.OK) return;
+
+        try
+        {
+            BackupService.Restore(chosen.Id);
+            MessageBox.Show(
+                $"Restored {chosen.Files.Count} file(s) from snapshot {chosen.Id}.",
+                "Universal FrameFX");
+        }
+        catch (Exception ex) when (ex is IOException or InvalidDataException
+                                  or FileNotFoundException or UnauthorizedAccessException)
+        {
+            MessageBox.Show($"Restore failed: {ex.Message}", "Universal FrameFX",
+                            MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }

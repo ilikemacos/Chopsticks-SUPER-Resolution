@@ -24,15 +24,22 @@ public static class PlatformDetector
 
         bool win11 = build >= 22000;
         string sys = Environment.GetFolderPath(Environment.SpecialFolder.System);
+        var probe = Interop.D3DProbe.Probe();
 
         return new PlatformInfo
         {
             Build = build,
             Win11 = win11,
-            DX11 = File.Exists(Path.Combine(sys, "d3d11.dll")),
-            // DX12 runtime ships with Windows; treat it as usable on Windows 11.
-            DX12 = File.Exists(Path.Combine(sys, "d3d12.dll")) && win11,
-            Vulkan = File.Exists(Path.Combine(sys, "vulkan-1.dll")),
+            // Probed, not guessed. d3d11.dll and d3d12.dll exist on every
+            // Windows 10/11 install regardless of GPU capability, so a
+            // File.Exists check answered a different question than the one asked.
+            DX11 = probe.Dx11,
+            DX12 = probe.Dx12,
+            Dx11FeatureLevel = Interop.D3DProbe.FeatureLevelText(probe.Dx11FeatureLevel),
+            // Still a file check, and still labelled as one: the loader being
+            // present says nothing about a usable Vulkan device, so this must
+            // never gate a capability.
+            VulkanLoaderPresent = File.Exists(Path.Combine(sys, "vulkan-1.dll")),
         };
     }
 }

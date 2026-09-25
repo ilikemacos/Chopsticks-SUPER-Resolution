@@ -5,12 +5,16 @@ on:
     branches: ["**"]
     paths:
       - "app-wpf/**"
+      - "csr/src/**"
+      - "csr/ref/golden/**"
       - ".github/workflows/wpf-app.yml"
     tags:
       - "v*"
   pull_request:
     paths:
       - "app-wpf/**"
+      - "csr/src/**"
+      - "csr/ref/golden/**"
   workflow_dispatch:
     inputs:
       release:
@@ -40,6 +44,12 @@ jobs:
 
       - name: Build
         run: dotnet build app-wpf/UniversalFrameFX.sln -c Release --no-restore
+
+      - name: Test
+        run: dotnet test app-wpf/tests/UniversalFrameFX.Tests/UniversalFrameFX.Tests.csproj -c Release --no-build --verbosity normal
+
+      - name: Test the CSR core against the golden vectors
+        run: dotnet test csr/Csr.sln -c Release --verbosity normal
 
       - name: Publish self-contained single-file exe
         run: >

@@ -2,7 +2,30 @@ using System.Text.Json.Serialization;
 
 namespace UniversalFrameFX.Models;
 
-/// <summary>A physical display adapter, detected from WMI + the driver, never guessed from the brand.</summary>
+/// <summary>How confident we are in an inferred value.</summary>
+public enum Certainty
+{
+    /// <summary>Read directly from the driver or the OS.</summary>
+    Known,
+    /// <summary>Inferred from a lookup table; may be wrong for unlisted parts.</summary>
+    Inferred,
+    /// <summary>Could not be determined. Must never imply a capability either way.</summary>
+    Unknown,
+}
+
+/// <summary>Whether a technology can be applied from outside the game.</summary>
+public enum Integration
+{
+    /// <summary>The game must ship it; we can only configure what is already there.</summary>
+    Native,
+    /// <summary>We can apply it ourselves to any window. Spatial methods only.</summary>
+    External,
+    /// <summary>Not possible by any route available to this application.</summary>
+    Unavailable,
+}
+
+/// <summary>A physical display adapter. Vendor, IDs, VRAM and driver come from WMI
+/// and the driver registry key. Architecture is inferred — see <see cref="ArchCertainty"/>.</summary>
 public sealed class GpuInfo
 {
     public string Name { get; set; } = "Unknown GPU";
@@ -12,6 +35,21 @@ public sealed class GpuInfo
     public int DeviceId { get; set; }
     public long VramBytes { get; set; }
     public string DriverVersion { get; set; } = "";
+
+    /// <summary>
+    /// How much to trust <see cref="Arch"/>. It is derived from a device-ID
+    /// lookup, not read from the driver, so an unlisted part reads
+    /// <see cref="Certainty.Unknown"/> and must not be used to rule a
+    /// capability either in or out.
+    /// </summary>
+    public Certainty ArchCertainty { get; set; } = Certainty.Unknown;
+
+    public string ArchDisplay => ArchCertainty switch
+    {
+        Certainty.Known => Arch,
+        Certainty.Inferred => $"{Arch} (inferred)",
+        _ => "Unknown",
+    };
 
     public string VramDisplay =>
         VramBytes <= 0 ? "unknown" : $"{VramBytes / 1024d / 1024d / 1024d:0.0} GB";
@@ -24,7 +62,16 @@ public sealed class PlatformInfo
     public bool Win11 { get; set; }
     public bool DX11 { get; set; }
     public bool DX12 { get; set; }
-    public bool Vulkan { get; set; }
+
+    /// <summary>Highest D3D11 feature level accepted, e.g. "11_0". Empty if unprobed.</summary>
+    public string Dx11FeatureLevel { get; set; } = "";
+
+    /// <summary>
+    /// The Vulkan loader DLL is present. This is NOT "Vulkan works" — it says
+    /// nothing about whether a usable device exists, so it must never gate a
+    /// capability. Named to stop that mistake being made again.
+    /// </summary>
+    public bool VulkanLoaderPresent { get; set; }
 }
 
 /// <summary>One upscaler and whether it can honestly be offered on this machine.</summary>
@@ -32,9 +79,39 @@ public sealed class CapabilityRow
 {
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
-    public bool Available { get; set; }
+
+    /// <summary>
+    /// True when this machine's hardware and OS do not block the technology.
+    /// For <see cref="Integration.Native"/> rows this is NOT "you can use it" —
+    /// the game still has to ship it. The UI must not render this as "Available"
+    /// on its own.
+    /// </summary>
+    public bool HardwareOk { get; set; }
+
+    /// <summary>
+    /// Null when the hardware verdict could not be determined. Distinct from
+    /// false: asserting absence from a guess is the same error as asserting
+    /// presence.
+    /// </summary>
+    public bool? Determined { get; set; } = true;
+
+    public Integration Integration { get; set; } = Integration.Native;
     public string Reason { get; set; } = "";
     public string Requirements { get; set; } = "";
+
+    /// <summary>Short, honest pill text for this row.</summary>
+    public string StatusText => Determined is null
+        ? "Undetermined"
+        : !HardwareOk ? "Not supported"
+        : Integration == Integration.External ? "Ready to use"
+        : "Hardware OK";
+
+    /// <summary>Theme brush key for the pill.</summary>
+    public string StatusBrush => Determined is null
+        ? "Warn"
+        : !HardwareOk ? "Bad"
+        : Integration == Integration.External ? "Ok"
+        : "Accent";
 }
 
 /// <summary>One frame-generation technology and its honest state.</summary>

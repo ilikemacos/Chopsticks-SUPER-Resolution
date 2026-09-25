@@ -107,10 +107,22 @@ public partial class MainWindow : Window
 
         try
         {
-            var path = await UpdateService.DownloadAsync(_update.AssetUrl, progress);
-            UpdateStatus.Text = "Starting the new version…";
+            UpdateStatus.Text = "Downloading… 0%";
+            var path = await UpdateService.DownloadAsync(
+                _update.AssetUrl, progress, _update.AssetSha256Url);
+            UpdateStatus.Text = "Verified — starting the new version…";
             Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
             Application.Current.Shutdown();
+        }
+        catch (UpdateService.IntegrityException ex)
+        {
+            // Distinct from a network failure: this means we got the bytes and
+            // they were wrong. Never launch, and say so clearly.
+            UpdateStatus.Text = "Update rejected — checksum did not verify.";
+            UpdateButton.IsEnabled = true;
+            MessageBox.Show(ex.Message, "Update not installed",
+                            MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
         }
         catch (Exception ex)
         {

@@ -37,11 +37,13 @@ public static class GpuDetector
                     catch { /* AdapterRAM is capped at 4 GB and can be absent; ignore. */ }
                 }
 
+                var (arch, archCertainty) = ArchOf(vendor, dev);
                 list.Add(new GpuInfo
                 {
                     Name = name,
                     Vendor = vendor,
-                    Arch = ArchOf(vendor, dev),
+                    Arch = arch,
+                    ArchCertainty = archCertainty,
                     VendorId = ven,
                     DeviceId = dev,
                     VramBytes = vram,
@@ -83,23 +85,49 @@ public static class GpuDetector
         _ => "Unknown",
     };
 
-    private static string ArchOf(string vendor, int devId) => vendor switch
+    /// <summary>
+    /// Infers architecture from the PCI device ID.
+    /// </summary>
+    /// <remarks>
+    /// This is a lookup over ID <i>ranges</i>, and device IDs are not monotonic by
+    /// architecture — mobile parts, refreshes and workstation cards all break the
+    /// ordering. So the result carries a <see cref="Certainty"/> and callers must
+    /// not treat <see cref="Certainty.Unknown"/> as evidence either way. It is
+    /// also the reason the FSR 4 row can report "undetermined" rather than
+    /// "unavailable".
+    /// </remarks>
+    private static (string Arch, Certainty Certainty) ArchOf(string vendor, int devId)
     {
-        "NVIDIA" =>
-            devId >= 0x2B00 ? "Blackwell" :
-            devId >= 0x2600 ? "Ada Lovelace" :
-            devId >= 0x2200 ? "Ampere" :
-            devId >= 0x1E00 ? "Turing" : "Pascal or older",
-        "AMD" =>
-            devId >= 0x7500 ? "RDNA 4" :
-            devId >= 0x7440 ? "RDNA 3" :
-            devId >= 0x73A0 ? "RDNA 2" :
-            devId >= 0x7310 ? "RDNA 1" : "GCN or older",
-        "Intel" =>
-            devId >= 0xE200 ? "Xe2 (Battlemage)" :
-            devId >= 0x5690 ? "Xe-HPG (Arc Alchemist)" : "Xe-LP or older",
-        _ => "Unknown",
-    };
+        switch (vendor)
+        {
+            case "NVIDIA":
+                if (devId is >= 0x2B00 and <= 0x2BFF) return ("Blackwell", Certainty.Inferred);
+                if (devId is >= 0x2600 and <= 0x28FF) return ("Ada Lovelace", Certainty.Inferred);
+                if (devId is >= 0x2200 and <= 0x25FF) return ("Ampere", Certainty.Inferred);
+                if (devId is >= 0x1E00 and <= 0x21FF) return ("Turing", Certainty.Inferred);
+                if (devId is > 0x0000 and < 0x1E00) return ("Pascal or older", Certainty.Inferred);
+                return ("Unknown", Certainty.Unknown);
+
+            case "AMD":
+                // RDNA 4 is the only one that gates a feature, so it is the one
+                // range that must not be guessed loosely.
+                if (devId is >= 0x7550 and <= 0x759F) return ("RDNA 4", Certainty.Inferred);
+                if (devId is >= 0x7440 and <= 0x754F) return ("RDNA 3", Certainty.Inferred);
+                if (devId is >= 0x73A0 and <= 0x743F) return ("RDNA 2", Certainty.Inferred);
+                if (devId is >= 0x7310 and <= 0x739F) return ("RDNA 1", Certainty.Inferred);
+                if (devId is > 0x0000 and < 0x7310) return ("GCN or older", Certainty.Inferred);
+                return ("Unknown", Certainty.Unknown);
+
+            case "Intel":
+                if (devId is >= 0xE200 and <= 0xE2FF) return ("Xe2 (Battlemage)", Certainty.Inferred);
+                if (devId is >= 0x5690 and <= 0x56FF) return ("Xe-HPG (Arc Alchemist)", Certainty.Inferred);
+                if (devId is > 0x0000 and < 0x5690) return ("Xe-LP or older", Certainty.Inferred);
+                return ("Unknown", Certainty.Unknown);
+
+            default:
+                return ("Unknown", Certainty.Unknown);
+        }
+    }
 
     /// <summary>Reads HardwareInformation.qwMemorySize for the matching adapter — accurate for cards above 4 GB.</summary>
     private static long VramFromRegistry(string name)

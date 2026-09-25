@@ -25,12 +25,37 @@ public sealed class GoldenVectorTests
             "csr/ref/golden not found. Run 'python3 export_golden.py' in csr/ref.");
     }
 
+    private sealed record IndexEntry(string name);
+    private sealed record GoldenIndex(IndexEntry[] cases);
+
+    /// <summary>
+    /// Reads the case list from <c>index.json</c> rather than globbing the folder.
+    /// </summary>
+    /// <remarks>
+    /// Globbing silently swallowed any other JSON written into the folder and
+    /// tried to parse it as a CSR case — a missing case would have read as a pass,
+    /// and an unrelated one (the bilinear baseline, say) as a spurious failure.
+    /// The index is the manifest the exporter writes, so a case that is exported
+    /// is a case that runs.
+    /// </remarks>
     public static TheoryData<string> Cases()
     {
+        var json = File.ReadAllText(Path.Combine(GoldenDir(), "index.json"));
+        var index = JsonSerializer.Deserialize<GoldenIndex>(json,
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+            ?? throw new InvalidDataException("could not parse golden/index.json");
+        Assert.NotEmpty(index.cases);
+
         var data = new TheoryData<string>();
-        foreach (var f in Directory.GetFiles(GoldenDir(), "*.json").OrderBy(x => x))
-            if (!f.EndsWith("index.json", StringComparison.Ordinal))
-                data.Add(Path.GetFileNameWithoutExtension(f));
+        foreach (var c in index.cases.OrderBy(c => c.name, StringComparer.Ordinal))
+        {
+            var file = Path.Combine(GoldenDir(), c.name + ".json");
+            if (!File.Exists(file))
+                throw new FileNotFoundException(
+                    $"golden/index.json lists '{c.name}' but {c.name}.json is missing. "
+                    + "Run 'python3 export_golden.py' in csr/ref.");
+            data.Add(c.name);
+        }
         return data;
     }
 

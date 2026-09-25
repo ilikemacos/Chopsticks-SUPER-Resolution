@@ -12,6 +12,11 @@ import json
 import pathlib
 
 import numpy as np
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2]
+                      / "tools" / "upscaler-ref"))
+from framefx_spatial import bilinear
 
 from csr import CsrConfig, csr_resolve, csr_sharpen
 
@@ -70,6 +75,33 @@ def make_input(name: str, w: int, h: int) -> np.ndarray:
     return np.ascontiguousarray(np.clip(a, 0, 1), dtype=np.float32)
 
 
+def export_bilinear_baseline() -> None:
+    """Pin the bilinear baseline too.
+
+    CSR is only meaningfully "better" against a specific baseline, so the ports
+    must compute the same one. Host image stacks do not: WPF's TransformedBitmap
+    resamples with Fant, so a pane labelled "bilinear" that came from the host is
+    not the filter the quality numbers were measured against.
+    """
+    cases = []
+    for name, (iw, ih), (ow, oh) in CASES:
+        src = make_input(name, iw, ih)
+        out = bilinear(src, ow, oh)
+        cases.append({
+            "name": name,
+            "input": {"width": iw, "height": ih,
+                      "rgb": [round(float(v), 7) for v in src.ravel()]},
+            "bilinear": {"width": ow, "height": oh,
+                         "rgb": [round(float(v), 7) for v in out.ravel()]},
+        })
+    (OUT / "bilinear_baseline.json").write_text(json.dumps(
+        {"tolerance": TOLERANCE,
+         "note": "Centre-aligned bilinear: output centres map to "
+                 "(i + 0.5) * in/out - 0.5 in input space, with edge clamping.",
+         "cases": cases}, indent=1))
+    print(f"  {'bilinear_baseline':<24} {len(cases)} cases")
+
+
 def main() -> None:
     OUT.mkdir(exist_ok=True)
     index = []
@@ -95,6 +127,7 @@ def main() -> None:
         (OUT / f"{name}.json").write_text(json.dumps(payload, indent=1))
         index.append({"name": name, "in": [iw, ih], "out": [ow, oh]})
         print(f"  {name:<24} {iw}x{ih} -> {ow}x{oh}")
+    export_bilinear_baseline()
     (OUT / "index.json").write_text(json.dumps(
         {"tolerance": TOLERANCE,
          "note": "Reference uses exact reciprocals; GPU ports use fast "

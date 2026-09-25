@@ -48,7 +48,7 @@ public partial class DashboardView : UserControl
                 Margin = new Thickness(0, 6, 0, 8),
                 TextWrapping = TextWrapping.Wrap,
             });
-            gpuStack.Children.Add(Ui.Muted($"{gpu.Vendor} · {gpu.Arch}"));
+            gpuStack.Children.Add(Ui.Muted($"{gpu.Vendor} · {gpu.ArchDisplay}"));
             gpuStack.Children.Add(Ui.Muted($"{gpu.VramDisplay} VRAM"));
             gpuStack.Children.Add(Ui.Muted($"Driver {gpu.DriverVersion}"));
         }
@@ -78,7 +78,7 @@ public partial class DashboardView : UserControl
         });
         platStack.Children.Add(RuntimeLine("DirectX 11", plat.DX11));
         platStack.Children.Add(RuntimeLine("DirectX 12", plat.DX12));
-        platStack.Children.Add(RuntimeLine("Vulkan", plat.Vulkan));
+        platStack.Children.Add(RuntimeLine("Vulkan", plat.VulkanLoaderPresent));
         var platCard = Ui.Card(platStack, new Thickness(0));
         Grid.SetColumn(platCard, 2);
 

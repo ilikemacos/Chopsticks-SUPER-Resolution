@@ -18,6 +18,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- CSR's verified upscaler core. net8.0 with no Windows dependency, so the
+         maths is tested on Linux CI; see csr/tests. -->
+    <ProjectReference Include="../../../csr/src/Csr.Core/Csr.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Management" Version="8.0.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
