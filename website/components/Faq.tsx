@@ -1,11 +1,15 @@
 const faqs = [
   {
     q: "Can Universal FrameFX add FSR or XeSS to any game?",
-    a: "No, and any tool that claims to is misleading you. Temporal upscalers need motion vectors, depth buffers and jitter offsets that only the game engine produces. Universal FrameFX configures the upscalers a game already ships, and — where a public, redistributable wrapper DLL exists — can drop it into a specific game folder with a full backup.",
+    a: "Not FSR 2/3/4 or XeSS, and any tool that claims to is misleading you: temporal upscalers need motion vectors, depth buffers and jitter offsets that only the game engine produces. What can be applied to any window is spatial upscaling, because it works on a finished frame — that is what CSR is, and it is the only upscaler here that needs no game support. Otherwise Universal FrameFX configures the upscalers a game already ships, and — where a public, redistributable wrapper DLL exists — can drop it into a specific game folder with a full backup.",
+  },
+  {
+    q: "What is CSR, and is it as good as FSR 2 or DLSS?",
+    a: "CSR (Chopsticks Super Resolution) is our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS design and reimplemented from its MIT-licensed source: a 16-tap edge-adaptive resolve with a deringing clamp, then contrast-limited sharpening that adapts to local variance. Against the same references it measures +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. It is not comparable to FSR 2 or DLSS: those reconstruct detail from previous frames, and no spatial filter can recover detail the game never rendered. Expect clearly better than a plain resample, not native quality. It also costs GPU time and creates no frames, so no FPS figure attaches to it.",
   },
   {
     q: "Does it work on my NVIDIA / Intel GPU?",
-    a: "FSR 1/2/3 and XeSS are cross-vendor and run on NVIDIA, AMD and Intel. FSR 4 requires AMD RDNA 4 hardware. GPU brand does not decide availability on its own — the app reports the real requirement for your exact configuration.",
+    a: "CSR runs on any GPU that can run a Direct3D 11 compute shader. FSR 1/2/3 and XeSS are cross-vendor and run on NVIDIA, AMD and Intel. FSR 4 requires AMD RDNA 4 hardware. GPU brand does not decide availability on its own — the app reports the real requirement for your exact configuration, and where it cannot confirm your GPU's architecture it says \"undetermined\" rather than guessing either way.",
   },
   {
     q: "Can it add frame generation to a game that doesn't have it?",

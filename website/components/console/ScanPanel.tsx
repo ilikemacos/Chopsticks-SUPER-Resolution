@@ -105,7 +105,11 @@ export function ScanPanel({
                     </div>
                     <p className="mt-1 text-xs text-muted">{verdict}</p>
                   </div>
-                  <Pill tone={possible ? "good" : "bad"}>{possible ? "Possible" : "No"}</Pill>
+                  <Pill
+                    tone={possible === true ? "good" : possible === null ? "warn" : "bad"}
+                  >
+                    {possible === true ? "Possible" : possible === null ? "Undetermined" : "No"}
+                  </Pill>
                 </div>
               ))}
             </div>

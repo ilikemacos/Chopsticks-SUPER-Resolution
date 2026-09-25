@@ -15,7 +15,7 @@ public partial class ProfilesView : UserControl
         StorageNote.Text = "Profiles are stored as JSON in\n" + AppPaths.Profiles;
 
         ApiBox.ItemsSource = new[] { "DirectX 11", "DirectX 12", "Vulkan" };
-        UpscalerBox.ItemsSource = new[] { "None", "FSR1", "FSR2", "FSR3", "FSR4", "XeSS" };
+        UpscalerBox.ItemsSource = ProfileUpscalers.All;
         QualityBox.ItemsSource = CapabilityService.QualityModes;
         FrameGenBox.ItemsSource = new[] { "None", "FSR3-FG", "XeSS-FG" };
 

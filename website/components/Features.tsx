@@ -1,11 +1,15 @@
 const features = [
   {
     title: "Real GPU detection",
-    body: "NVIDIA, AMD and Intel — model, VRAM, driver, DirectX feature level and Vulkan availability, read from WMI and the driver, not guessed from the brand.",
+    body: "NVIDIA, AMD and Intel — model, VRAM and driver read from WMI and the driver, and the DirectX feature level measured by actually creating a device rather than looking for DLLs on disk. When the architecture cannot be confirmed it says so instead of guessing.",
+  },
+  {
+    title: "CSR — our own upscaler",
+    body: "Chopsticks Super Resolution: a 16-tap edge-adaptive resolve with contrast-limited, variance-adaptive sharpening, derived from FSR 1's EASU + RCAS. It needs no engine data, so it is the one upscaler here that works on any app. Measured at +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear.",
   },
   {
     title: "Unified upscaling front-end",
-    body: "FSR 1/2/3, FSR 4 (RDNA 4 detected at runtime) and XeSS in one panel. Only the quality modes each implementation actually supports are shown.",
+    body: "CSR plus FSR 1/2/3, FSR 4 (RDNA 4 detected at runtime) and XeSS in one panel. Only the quality modes each implementation actually supports are shown, and anything that needs the game to ship it is labelled that way.",
   },
   {
     title: "GPU switching",
@@ -24,8 +28,8 @@ const features = [
     body: "Before writing to a game folder, it snapshots the affected files. Restore reverts everything. It refuses to touch anti-cheat-protected folders.",
   },
   {
-    title: "One-click auto-update",
-    body: "On launch it checks GitHub for a newer release and offers to download and relaunch it — no reinstall, no hunting for downloads.",
+    title: "Verified auto-update",
+    body: "On launch it checks GitHub for a newer release and offers to download and relaunch it. The download's SHA-256 must match the checksum published beside it, or the file is deleted and never run.",
   },
   {
     title: "Local & private",

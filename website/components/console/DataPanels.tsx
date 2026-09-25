@@ -11,7 +11,7 @@ import {
   downloadJson,
   readJsonFile,
 } from "./ui";
-import { profileSlug, methodById, type Profile } from "@/lib/engine";
+import { profileSlug, methodById, toInteropProfile, type Profile } from "@/lib/engine";
 import { site } from "@/lib/site";
 
 // ---------------------------------------------------------------------------
@@ -118,13 +118,13 @@ export function ProfilesPanel({
       <PanelHeading
         kicker="Per-application"
         title="Profiles"
-        blurb="Saved configurations, stored in this browser. The JSON is the same schema the desktop app reads, so a profile exported here imports there unchanged."
+        blurb="Saved configurations, stored in this browser. Exports carry both this site's field names and the desktop app's, so the upscaler and quality you pick here arrive intact in either direction — the desktop app is schema 1 and uses different names for the same settings."
       />
 
       <div className="mb-6 flex flex-wrap gap-3">
         <ImportButton label="Import profile JSON" onData={onImport} />
         <Btn
-          onClick={() => downloadJson("framefx-profiles.json", profiles)}
+          onClick={() => downloadJson("framefx-profiles.json", profiles.map(toInteropProfile))}
           disabled={profiles.length === 0}
         >
           Export all ({profiles.length})
@@ -170,7 +170,7 @@ export function ProfilesPanel({
                 <KeyVal k="Safe mode" v={p.safeMode ? "On — no game files written" : "Off"} />
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Btn onClick={() => onLoad(p)}>Edit</Btn>
-                  <Btn onClick={() => downloadJson(`${profileSlug(p.name)}.json`, p)}>Export</Btn>
+                  <Btn onClick={() => downloadJson(`${profileSlug(p.name)}.json`, toInteropProfile(p))}>Export</Btn>
                   <Btn variant="danger" onClick={() => onDelete(p.name)}>
                     Delete
                   </Btn>

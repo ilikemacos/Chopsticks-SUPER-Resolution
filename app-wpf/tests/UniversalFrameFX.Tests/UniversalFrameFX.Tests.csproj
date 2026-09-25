@@ -20,6 +20,12 @@
   <ItemGroup>
     <Compile Include="../../src/UniversalFrameFX/Services/Checksum.cs"
              Link="Linked/Checksum.cs" />
+    <Compile Include="../../src/UniversalFrameFX/Models/Models.cs"
+             Link="Linked/Models.cs" />
+    <Compile Include="../../src/UniversalFrameFX/Models/ProfileOptions.cs"
+             Link="Linked/ProfileOptions.cs" />
+    <Compile Include="../../src/UniversalFrameFX/Services/CapabilityService.cs"
+             Link="Linked/CapabilityService.cs" />
   </ItemGroup>
 
 </Project>

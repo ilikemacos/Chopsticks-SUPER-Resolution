@@ -41,7 +41,12 @@ export function SystemCard() {
   };
 
   const usable = system
-    ? resolveMethods(system.gpu).filter((a) => a.possible).map((a) => a.method.name)
+    // `possible === null` is undetermined, not yes. It is deliberately left out
+    // of this list rather than counted as usable; the Scan panel shows it
+    // explicitly with its reason.
+    ? resolveMethods(system.gpu)
+        .filter((a) => a.possible === true)
+        .map((a) => a.method.name)
     : [];
 
   return (

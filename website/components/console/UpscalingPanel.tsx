@@ -67,7 +67,7 @@ export function UpscalingPanel({
       <PanelHeading
         kicker="Works without game support"
         title="Universal Upscaling"
-        blurb="Spatial upscaling runs on the frames a window already presents, so it works with any game or application. Set the game's own resolution to the render resolution below; FrameFX scales its output up to your display."
+        blurb="CSR runs on the frames a window already presents, so it works with any game or application. Set the game's own resolution to the render resolution below; CSR scales its output up to your display. Temporal upscalers cannot work this way — they need motion vectors and depth that only the renderer has."
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-[1.1fr_1fr]">
@@ -125,7 +125,16 @@ export function UpscalingPanel({
               </div>
               <p className="text-xs leading-relaxed text-muted">{method.note}</p>
               {verdict ? (
-                <p className={`mt-2 text-xs ${verdict.possible ? "text-good" : "text-bad"}`}>
+                <p
+                  className={`mt-2 text-xs ${
+                    verdict.possible === true
+                      ? "text-good"
+                      : verdict.possible === null
+                        ? "text-warn"
+                        : "text-bad"
+                  }`}
+                >
+                  {verdict.possible === null ? "Undetermined — " : ""}
                   {verdict.verdict}
                 </p>
               ) : null}

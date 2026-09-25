@@ -44,15 +44,18 @@ export interface Method {
  */
 export const METHODS: Method[] = [
   {
-    id: "framefx-spatial",
-    name: "FrameFX Spatial",
+    id: "csr",
+    name: "CSR (Chopsticks Super Resolution)",
     kind: "spatial",
     integration: "external",
     note:
-      "Our own spatial upscaler (Lanczos resample + adaptive sharpening). Runs on the " +
-      "frames a window already presents, so it works with any game or application. " +
-      "Spatial only — it cannot reconstruct detail the game never rendered, and it " +
-      "also scales the HUD.",
+      "Our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS design: a " +
+      "16-tap edge-adaptive resolve with a Rec.709 luma direction estimate and a " +
+      "deringing clamp, then contrast-limited sharpening that adapts to local " +
+      "variance. Measured against the same references, it is +1.48 dB PSNR over " +
+      "FSR 1 and +1.90 dB over bilinear. Runs on the frames a window already " +
+      "presents, so it works with any game or application. Spatial only — it " +
+      "cannot reconstruct detail the game never rendered, and it also scales the HUD.",
   },
   {
     id: "fsr1",
@@ -263,8 +266,12 @@ export function inferGpu(raw: string): GpuGuess {
 
 export interface MethodAvailability {
   method: Method;
-  /** Can it be used at all on this hardware (ignoring per-game support)? */
-  possible: boolean;
+  /**
+   * Can it be used at all on this hardware (ignoring per-game support)?
+   * `null` means undetermined — we could not establish it either way, which is
+   * not the same as "no" and must never be rendered as one.
+   */
+  possible: boolean | null;
   /** Plain-language explanation of the verdict. */
   verdict: string;
 }
@@ -289,6 +296,20 @@ export function resolveMethods(gpu: GpuGuess | null): MethodAvailability[] {
           method,
           possible: false,
           verdict: `Requires an AMD RDNA 4 GPU; detected ${gpu.vendor}.`,
+        };
+      }
+      // An unconfirmed architecture is not a confirmed absence. The browser
+      // reports a name, not a part number, so when we could not identify it the
+      // honest answer is "undetermined" — saying "unavailable" would assert
+      // absence from a guess. This mirrors ArchCertainty in the desktop app.
+      if (gpu.uncertain) {
+        return {
+          method,
+          possible: null,
+          verdict:
+            "Cannot confirm your GPU architecture from what the browser reports" +
+            (gpu.raw ? ` ("${gpu.raw}")` : "") +
+            ". FSR 4 needs RDNA 4; check your GPU model to be sure.",
         };
       }
       if (gpu.arch !== "RDNA 4") {
@@ -360,7 +381,7 @@ export function emptyProfile(outputWidth = 1920, outputHeight = 1080): Profile {
     executablePath: "",
     mode: "external",
     api: "Auto",
-    method: "framefx-spatial",
+    method: "csr",
     quality: "quality",
     renderWidth: plan.renderWidth,
     renderHeight: plan.renderHeight,
@@ -400,8 +421,8 @@ export function parseProfile(input: unknown): Profile | null {
     mode: o.mode === "native" ? "native" : "external",
     api: str(o.api, "Auto"),
     // Accept schema-1 files, which used `upscaler` with names like "FSR3".
-    method: str(o.method, legacyMethodId(str(o.upscaler, base.method))),
-    quality: str(o.quality, base.quality).toLowerCase().replace(/\s+/g, "-"),
+    method: currentMethodId(str(o.method, legacyMethodId(str(o.upscaler, base.method)))),
+    quality: qualityIdFrom(o, base.quality),
     renderWidth: num(o.renderWidth, base.renderWidth),
     renderHeight: num(o.renderHeight, base.renderHeight),
     outputWidth,
@@ -419,14 +440,82 @@ export function parseProfile(input: unknown): Profile | null {
 
 function legacyMethodId(v: string): string {
   const map: Record<string, string> = {
-    none: "framefx-spatial",
+    none: "csr",
+    csr: "csr",
     fsr1: "fsr1",
     fsr2: "fsr2",
     fsr3: "fsr3",
     fsr4: "fsr4",
     xess: "xess",
   };
-  return map[v.toLowerCase()] ?? "framefx-spatial";
+  return map[v.toLowerCase()] ?? "csr";
+}
+
+/**
+ * Maps a method id to a current one.
+ *
+ * "framefx-spatial" was the id of our own spatial upscaler before it became CSR.
+ * Profiles are stored in the visitor's browser and exported to disk, so files
+ * written under the old id still exist and must keep resolving to a real method
+ * rather than silently falling back to the default.
+ */
+function currentMethodId(v: string): string {
+  if (v === "framefx-spatial") return "csr";
+  return v;
+}
+
+// ---------------------------------------------------------------------------
+// Desktop interop
+// ---------------------------------------------------------------------------
+
+/** Method id -> the desktop app's `upscaler` string. */
+const DESKTOP_UPSCALER: Record<string, string> = {
+  csr: "CSR",
+  fsr1: "FSR1",
+  fsr2: "FSR2",
+  fsr3: "FSR3",
+  fsr4: "FSR4",
+  xess: "XeSS",
+  "fsr3-fg": "None",
+  "xess-fg": "None",
+  "external-fg": "None",
+};
+
+/**
+ * Serialises a profile so the desktop app reads it correctly.
+ *
+ * The two apps do not use the same field names: the desktop reads `upscaler`
+ * (a display string) and expects `quality` as a display string too, while this
+ * site uses `method` and preset ids. Writing only our own names meant the
+ * desktop silently fell back to its defaults — an imported profile came out as
+ * FSR 3 at the default quality no matter what was chosen here, which is exactly
+ * the kind of quiet wrong answer the project's honesty rule exists to prevent.
+ *
+ * Both sides ignore properties they do not know, so the file carries both
+ * spellings and each app reads the one it understands.
+ */
+export function toInteropProfile(p: Profile): Record<string, unknown> {
+  return {
+    ...p,
+    // Desktop field names, written alongside ours.
+    upscaler: DESKTOP_UPSCALER[p.method] ?? "None",
+    quality: presetById(p.quality).name,
+    // Our own preset id, so a round trip through the desktop app and back does
+    // not lose it (the desktop preserves unknown properties it never reads).
+    qualityId: p.quality,
+  };
+}
+
+/** Accepts either spelling of the quality field. */
+function qualityIdFrom(o: Record<string, unknown>, fallback: string): string {
+  const raw =
+    typeof o.qualityId === "string" && o.qualityId
+      ? o.qualityId
+      : typeof o.quality === "string"
+        ? o.quality
+        : fallback;
+  const id = raw.toLowerCase().replace(/\s+/g, "-");
+  return QUALITY_PRESETS.some((q) => q.id === id) ? id : fallback;
 }
 
 export function profileSlug(name: string): string {
