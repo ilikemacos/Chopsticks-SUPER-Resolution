@@ -16,6 +16,15 @@ export interface CompatRow {
 
 export const compatRows: CompatRow[] = [
   {
+    tech: "CSR 1.0 (our own)",
+    dx11: "yes",
+    dx12: "yes",
+    nvidia: "yes",
+    amd: "yes",
+    intel: "yes",
+    note: "Our own proprietary spatial upscaler, derived from FSR 1 (MIT), compiled into the app. Runs on any GPU and API and is the one upscaler here the app runs itself — no game integration. +1.48 dB PSNR over FSR 1. Costs GPU time; generates no frames.",
+  },
+  {
     tech: "FSR 1 (spatial)",
     dx11: "yes",
     dx12: "yes",
