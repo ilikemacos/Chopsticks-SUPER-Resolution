@@ -58,6 +58,25 @@ ablation against a verified baseline is what caught it. Had the first result bee
 taken at face value, CSR would have shipped ~2 dB *worse* than the algorithm it
 claims to improve on.
 
+### Tunables are already at their measured best
+
+A later sweep of the two shipping knobs across the full pattern set:
+
+- **Adaptive sharpening** is worth **+1.0 dB** over sharpening the whole frame
+  uniformly, and is kept on.
+- **Sharpness stops.** Weakening the sharpen nudges PSNR up by ~0.04 dB per step,
+  monotonically toward *no* sharpening. That is the metric artifact, not a win:
+  the reference frames are not sharpened, so less sharpening simply sits closer to
+  them in MSE while looking softer. 0.25 stops is kept as a perceptual choice, and
+  the ~0.04 dB is inside the noise. There is no genuine quality headroom in this
+  knob, so the default is not chased toward the number.
+
+The upshot: every default in `CsrConfig` is either measured to be best (taps=16,
+Rec.709 luma, EASU anisotropy, deringing, adaptive sharpening) or a deliberate
+perceptual choice with the trade-off stated (sharpness). "Improve the math"
+was tried and the honest result is that the current configuration is already at
+the measured optimum for the approaches tested.
+
 ### Confidence in the numbers
 
 `ref/csr.py`, configured to FSR 1's choices, reproduces EASU **bit-exactly**
@@ -88,6 +107,24 @@ python3 validate.py   # CSR vs FSR 1 vs bilinear, gates on beating FSR 1
 python3 ablate.py     # leave-one-out contribution of each change
 python3 sweep.py      # kernel parameter sweep
 ```
+
+
+## Performance
+
+The CPU reference and the shipped file upscaler (`ufx-upscale`) resolve and
+sharpen row-by-row, and both passes are parallelised across cores. The split is
+deterministic — each thread owns a disjoint band of output rows — so the result
+is **bit-identical to the serial output regardless of thread count**, which is
+why the golden vectors still hold on a multi-core machine
+(`tests/test_csr.cpp::OutputIsIdenticalRegardlessOfThreadCount` guards this).
+
+Measured, 1080p → 4K (`--quality Performance`), 4 cores, PNG decode/encode
+included: **3.13 s → 1.77 s** (~1.8×). `CSR_THREADS` caps the count (`1` forces
+serial; unset = auto), and images below ~64k output pixels stay single-threaded
+where thread setup would cost more than it saves.
+
+The real-time path is the GPU compute shader, not this CPU code; this speed-up is
+for offline file upscaling and for the app's preview.
 
 ## Delivery — unresolved, and the real blocker
 

@@ -2,10 +2,51 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <limits>
+#include <thread>
+#include <vector>
 
 namespace ufx::csr {
 namespace {
+
+// Runs `body(y)` for every row in [0, height) across the hardware's cores, each
+// thread owning a disjoint band of rows. Output is therefore identical to the
+// serial order regardless of thread count, so the golden vectors still hold.
+// Small images stay single-threaded, where thread setup would cost more than it
+// saves. CSR_THREADS caps the count (0/unset = auto); 1 forces serial.
+template <typename Body>
+void ParallelForRows(int height, int width, Body&& body) {
+    unsigned hw = std::thread::hardware_concurrency();
+    if (const char* env = std::getenv("CSR_THREADS")) {
+        char* end = nullptr;
+        unsigned long v = std::strtoul(env, &end, 10);
+        if (end != env) hw = static_cast<unsigned>(v);
+    }
+    if (hw == 0) hw = 1;
+
+    // Below this many output pixels the overhead is not worth it.
+    const long long work = static_cast<long long>(height) * width;
+    unsigned threads = (work < 64 * 1024 || height < 2) ? 1u
+                       : std::min<unsigned>(hw, static_cast<unsigned>(height));
+
+    if (threads <= 1) {
+        for (int y = 0; y < height; ++y) body(y);
+        return;
+    }
+
+    std::vector<std::thread> pool;
+    pool.reserve(threads - 1);
+    const int band = (height + static_cast<int>(threads) - 1) / static_cast<int>(threads);
+    for (unsigned t = 1; t < threads; ++t) {
+        const int y0 = static_cast<int>(t) * band;
+        const int y1 = std::min(height, y0 + band);
+        if (y0 >= y1) break;
+        pool.emplace_back([&body, y0, y1] { for (int y = y0; y < y1; ++y) body(y); });
+    }
+    for (int y = 0; y < std::min(height, band); ++y) body(y);  // this thread takes band 0
+    for (auto& th : pool) th.join();
+}
 
 // Rec.709 luma. Measured +0.22 dB over FSR 1's cheap 0.5B+0.5R+G proxy on
 // content where the channels disagree.
@@ -84,7 +125,7 @@ Image Resolve(const Image& src, int outWidth, int outHeight, const Options& o) {
     for (int dy = -1; dy <= 2; ++dy)
         for (int dx = -1; dx <= 2; ++dx) { offX[n] = dx; offY[n] = dy; ++n; }
 
-    for (int oy = 0; oy < outHeight; ++oy) {
+    ParallelForRows(outHeight, outWidth, [&](int oy) {
         const float ppY = (oy + 0.5f) * scaleY - 0.5f;
         const int ipY = static_cast<int>(std::floor(ppY));
         const float fy = ppY - ipY;
@@ -188,7 +229,7 @@ Image Resolve(const Image& src, int outWidth, int outHeight, const Options& o) {
             d[out + 1] = Sat(gg);
             d[out + 2] = Sat(bb);
         }
-    }
+    });
 
     return dst;
 }
@@ -214,7 +255,7 @@ Image Sharpen(const Image& img, const Options& o) {
         meanSq = Box3(sq, w, h);
     }
 
-    for (int y = 0; y < h; ++y) {
+    ParallelForRows(h, w, [&](int y) {
         for (int x = 0; x < w; ++x) {
             const size_t ie = img.ClampedIndex(x,     y);
             const size_t ib = img.ClampedIndex(x,     y - 1);
@@ -252,7 +293,7 @@ Image Sharpen(const Image& img, const Options& o) {
                 d[out + c] = Sat(SafeDiv(acc, denom));
             }
         }
-    }
+    });
 
     return dst;
 }

@@ -13,6 +13,7 @@
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
+#include <cstdlib>
 #include <cmath>
 #include <filesystem>
 #include <fstream>
@@ -221,4 +222,38 @@ TEST(CsrRegistry, RunActuallyUpscalesThroughTheAdapter) {
     // The edge must survive: left side dark, right side light.
     EXPECT_LT(out.data[out.ClampedIndex(1, 8)], 0.35f);
     EXPECT_GT(out.data[out.ClampedIndex(14, 8)], 0.65f);
+}
+
+
+// The row-parallel Resolve/Sharpen must produce output that does not depend on
+// the thread count, or the golden vectors would be a lie on multi-core machines.
+TEST(CsrCore, OutputIsIdenticalRegardlessOfThreadCount) {
+    std::mt19937 rng(20);
+    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    ufx::csr::Image src(60, 48);   // big enough to cross the parallel threshold
+    for (auto& v : src.data) v = dist(rng);
+
+#if defined(_WIN32)
+    _putenv_s("CSR_THREADS", "1");
+#else
+    setenv("CSR_THREADS", "1", 1);
+#endif
+    const ufx::csr::Image serial = ufx::csr::Upscale(src, 120, 96);
+
+#if defined(_WIN32)
+    _putenv_s("CSR_THREADS", "4");
+#else
+    setenv("CSR_THREADS", "4", 1);
+#endif
+    const ufx::csr::Image parallel = ufx::csr::Upscale(src, 120, 96);
+
+#if defined(_WIN32)
+    _putenv_s("CSR_THREADS", "");
+#else
+    unsetenv("CSR_THREADS");
+#endif
+
+    ASSERT_EQ(serial.data.size(), parallel.data.size());
+    for (size_t i = 0; i < serial.data.size(); ++i)
+        EXPECT_EQ(serial.data[i], parallel.data[i]) << "thread count changed pixel " << i;
 }
