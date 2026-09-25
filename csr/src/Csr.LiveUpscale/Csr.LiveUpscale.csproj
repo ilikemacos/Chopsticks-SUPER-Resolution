@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- WinForms gives a real HWND, a message loop and window lifecycle without
+         hand-rolled Win32 interop; the only novel code is the swapchain present.
+         Runtime floor 17763 matches Csr.Capture (free-threaded WGC frame pool). -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>x64</Platforms>
+    <!-- Compiles on non-Windows CI; runs only on Windows. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <AssemblyName>ufx-live-upscale</AssemblyName>
+    <RootNamespace>Csr.LiveUpscale</RootNamespace>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Vortice.Direct3D11" Version="3.6.2" />
+    <PackageReference Include="Vortice.DXGI" Version="3.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Csr.Capture/Csr.Capture.csproj" />
+    <ProjectReference Include="../Csr.Core/Csr.Core.csproj" />
+  </ItemGroup>
+
+</Project>

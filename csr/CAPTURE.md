@@ -140,6 +140,8 @@ Both are implemented, for different jobs:
 |---|---|
 | `Csr.Core` CSR maths | **verified** — 24/24 tests against the Python reference |
 | `Csr.Capture` WGC + D3D11 | **compiles** (Windows-targeted, built on Linux CI) |
+| `CsrPresenter` (swapchain present) | **compiles** — DXGI flip-model, copies the upscaled texture to the backbuffer 1:1 |
+| `Csr.LiveUpscale` runnable host | **compiles** — WinForms window + picker/`--window`, wires capture -> CSR -> present |
 | HLSL shaders | **compiled and executed** — 9 cases x 2 passes match the golden vectors, worst deviation 4.4e-6 vs 1/255 tolerance (`tools/shader-verify`) |
 | End-to-end on real hardware | **not done** — needs a Windows machine |
 
@@ -157,6 +159,18 @@ Two things that verification deliberately does **not** cover:
    fast approximations, which is why the tolerance is 1/255 rather than exact. A
    real GPU may deviate more.
 
-The capture path has still never executed. The first hardware run should check,
-in order: `fxc` compiles the shaders to `cs_5_0`; the golden-vector diff on the
-real GPU; then `LastGpuMilliseconds`; then measured end-to-end latency.
+The capture path has still never executed. The full present pipeline now exists
+and compiles — run `ufx-live-upscale` (from `csr/src/Csr.LiveUpscale`) on Windows:
+with no arguments it shows the system picker; `--window "<title>"` targets a window
+directly; `--quality <mode>` sets the ratio. It opens a window that displays the
+target, upscaled by CSR in real time.
+
+The first hardware run should check, in order: `fxc` compiles the shaders to
+`cs_5_0`; the golden-vector diff on the real GPU; then `LastGpuMilliseconds` (the
+per-frame GPU cost, already measured by the pipeline); then measured end-to-end
+latency; then `FramesDropped` under load, which is the signal to lower the output
+resolution. Everything above the hardware line compiles under
+`TreatWarningsAsErrors`, so the remaining risk is runtime behaviour — device
+creation flags, swapchain format support on the actual adapter, and the
+one-to-two frame compositor latency this path structurally adds — not the code
+shape.
