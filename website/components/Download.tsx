@@ -4,8 +4,8 @@ export function Download() {
   const iex = `iex (iwr -useb ${site.installScriptUrl})`;
   return (
     <section id="download" className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6">
-      <div className="orb left-1/2 top-10 h-[360px] w-[360px] -translate-x-1/2 bg-primary/15" />
-      <div className="card-glass relative z-10 rounded-3xl p-8 sm:p-12">
+      <div className="orb animate-pulse-slow left-1/2 top-10 h-[360px] w-[360px] -translate-x-1/2 bg-primary/15" />
+      <div className="card-glass relative z-10 rounded-2xl p-8 sm:p-12">
         <p className="section-label">Get the app</p>
         <h2 className="mt-3 font-display text-4xl font-bold tracking-tight text-gradient">
           Download
