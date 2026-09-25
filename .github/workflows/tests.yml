@@ -11,12 +11,18 @@ on:
     paths:
       - "app/**"
       - "tests/**"
+      # tests/test_csr.cpp is held to these vectors, so a change to the CSR
+      # specification has to re-run this suite.
+      - "csr/ref/golden/**"
       - "CMakeLists.txt"
       - ".github/workflows/tests.yml"
   pull_request:
     paths:
       - "app/**"
       - "tests/**"
+      # tests/test_csr.cpp is held to these vectors, so a change to the CSR
+      # specification has to re-run this suite.
+      - "csr/ref/golden/**"
       - "CMakeLists.txt"
       - ".github/workflows/tests.yml"
   workflow_dispatch:

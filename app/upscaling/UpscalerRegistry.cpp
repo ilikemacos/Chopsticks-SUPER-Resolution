@@ -1,5 +1,6 @@
 #include "UpscalerRegistry.h"
 
+#include "CsrUpscaler.h"
 #include "FsrUpscaler.h"
 #include "XessUpscaler.h"
 #include "NullUpscaler.h"
@@ -11,6 +12,8 @@ namespace ufx {
 
 UpscalerRegistry::UpscalerRegistry() {
     upscalers_.push_back(std::make_unique<NullUpscaler>());
+    // CSR first among the real entries: it is the one that needs no game support.
+    upscalers_.push_back(std::make_unique<CsrUpscaler>());
     upscalers_.push_back(std::make_unique<FsrUpscaler>(1));
     upscalers_.push_back(std::make_unique<FsrUpscaler>(2));
     upscalers_.push_back(std::make_unique<FsrUpscaler>(3));
@@ -62,6 +65,7 @@ bool ParseQualityMode(std::string_view s, QualityMode& out) {
 const char* UpscalerIdName(UpscalerId id) {
     switch (id) {
         case UpscalerId::None: return "None";
+        case UpscalerId::Csr:  return "CSR";
         case UpscalerId::Fsr1: return "FSR1";
         case UpscalerId::Fsr2: return "FSR2";
         case UpscalerId::Fsr3: return "FSR3";
@@ -74,7 +78,8 @@ const char* UpscalerIdName(UpscalerId id) {
 bool ParseUpscalerId(std::string_view s, UpscalerId& out) {
     struct M { const char* n; UpscalerId v; };
     static const M table[] = {
-        {"None", UpscalerId::None}, {"FSR1", UpscalerId::Fsr1},
+        {"None", UpscalerId::None}, {"CSR", UpscalerId::Csr},
+        {"FSR1", UpscalerId::Fsr1},
         {"FSR2", UpscalerId::Fsr2}, {"FSR3", UpscalerId::Fsr3},
         {"FSR4", UpscalerId::Fsr4}, {"XeSS", UpscalerId::XeSS},
     };

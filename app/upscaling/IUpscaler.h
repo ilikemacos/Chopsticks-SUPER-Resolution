@@ -18,6 +18,8 @@ enum class GraphicsApi {
 
 enum class UpscalerId {
     None,
+    // Ours, and the only one in this list the app can run itself.
+    Csr,
     Fsr1,
     Fsr2,
     Fsr3,

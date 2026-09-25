@@ -10,6 +10,10 @@ set(UFX_CORE_SOURCES
     gpu/MockGpuEnumerator.h
     upscaling/IUpscaler.h
     upscaling/QualityMode.h
+    upscaling/csr/CsrCore.cpp
+    upscaling/csr/CsrCore.h
+    upscaling/CsrUpscaler.cpp
+    upscaling/CsrUpscaler.h
     upscaling/FsrUpscaler.cpp
     upscaling/FsrUpscaler.h
     upscaling/XessUpscaler.cpp

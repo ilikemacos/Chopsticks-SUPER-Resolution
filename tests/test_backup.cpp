@@ -3,16 +3,35 @@
 #include "profiles/BackupManager.h"
 
 #include <cstdlib>
+#include <atomic>
 #include <fstream>
+#include <random>
+#include <stdexcept>
 
 using namespace ufx;
 namespace fs = std::filesystem;
 
 namespace {
+// A directory that is genuinely new on every call.
+//
+// This used to be temp_directory_path() / (tag + std::to_string(::rand())) with
+// rand() never seeded, so each process run produced the *same* five names. The
+// second `ctest` run on a machine then reused a directory that still held the
+// previous run's snapshot, and Backup.ListReturnsSnapshots counted two where it
+// expected one. CI never caught it because each CI runner starts with an empty
+// temp directory; it only failed for anyone running the suite twice locally.
 fs::path MakeTempDir(const std::string& tag) {
-    auto p = fs::temp_directory_path() / (tag + std::to_string(::rand()));
-    fs::create_directories(p);
-    return p;
+    static std::atomic<unsigned> counter{0};
+    std::random_device rd;
+    for (int attempt = 0; attempt < 64; ++attempt) {
+        auto p = fs::temp_directory_path() /
+                 (tag + std::to_string(rd()) + "_" + std::to_string(counter++));
+        std::error_code ec;
+        // create_directory (not create_directories) so an existing path is a
+        // miss we retry rather than one we silently adopt.
+        if (fs::create_directory(p, ec) && !ec) return p;
+    }
+    throw std::runtime_error("could not create a unique temp directory for " + tag);
 }
 void WriteFile(const fs::path& p, const std::string& content) {
     fs::create_directories(p.parent_path());

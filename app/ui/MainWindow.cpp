@@ -308,9 +308,20 @@ void MainWindow::PaintUpscaling(HDC dc, RECT rc) {
         RECT card = { rc.left, y, rc.right, y + 96 };
         FillRoundRect(dc, card, GetTheme().surface, 10);
         DrawText(dc, Widen(caps.displayName), { card.left + 18, card.top + 12, card.right - 200, card.top + 38 }, fontHeading_, GetTheme().text);
+
+        // "Available" alone would read the same for CSR, which this app performs
+        // itself, and for FSR 3, which only works if the game shipped it. That is
+        // the distinction users most need, so the hardware verdict and the
+        // integration requirement are shown as separate facts.
         std::wstring status = entry.availability.available ? L"Available" : L"Unavailable";
         DrawText(dc, status, { card.right - 200, card.top + 12, card.right - 18, card.top + 38 },
                  fontBody_, entry.availability.available ? GetTheme().ok : GetTheme().bad, DT_RIGHT);
+        if (entry.availability.available) {
+            const bool external = !caps.gameIntegrationRequired;
+            DrawText(dc, external ? L"Works on any app" : L"Needs game support",
+                     { card.right - 200, card.top + 34, card.right - 18, card.top + 56 },
+                     fontSmall_, external ? GetTheme().ok : GetTheme().textMuted, DT_RIGHT);
+        }
         std::wstring detail = entry.availability.available
             ? Widen(caps.requirements)
             : Widen(entry.availability.reason);

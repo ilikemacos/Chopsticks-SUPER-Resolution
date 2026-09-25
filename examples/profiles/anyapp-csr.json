@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "name": "Any App Example",
+  "executablePath": "C:/Games/OldEngineGame/bin/OldEngineGame.exe",
+  "api": "DirectX 11",
+  "upscaler": "CSR",
+  "quality": "Quality",
+  "frameGen": "None",
+  "frameGenEnabled": false,
+  "sharpness": 0.25,
+  "outputWidth": 2560,
+  "outputHeight": 1440,
+  "fpsLimit": 0,
+  "gameDeclaresUpscalerSupport": false,
+  "gameDeclaresFrameGenSupport": false,
+  "extra": {
+    "notes": "The point of this example: gameDeclaresUpscalerSupport is false and CSR is still the chosen upscaler. CSR works on a finished frame, so it needs nothing from the engine - unlike FSR 2/3/4 and XeSS, which are unusable here. Set the game itself to 1707x960 (Quality = 1.5x) and CSR scales that to 2560x1440. Frame generation stays off because no external tool can add it."
+  }
+}

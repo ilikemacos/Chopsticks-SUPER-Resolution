@@ -21,6 +21,7 @@ It is **not**:
 
 | Technology | Requires | External-only mechanism | UFX support |
 | --- | --- | --- | --- |
+| CSR (ours) | Finished colour image only | **None — works on any app** | Performed by UFX itself |
 | FSR 1 (spatial) | Post-process hook | Reshade-style plugin (per-game) | Config only |
 | FSR 2 | Motion vectors + depth | Game integration | Config / DLL swap where public wrappers exist |
 | FSR 3 (upscaling) | Same as FSR 2 | Game integration | Config / DLL swap |
@@ -37,7 +38,11 @@ Rows populated from vendor public docs as of Q1 2026; verify at runtime via `cap
 - `app/core` — Application services, DI container, config paths.
 - `app/gpu` — GPU enumeration via DXGI + WMI, feature-level probe.
 - `app/dx11` / `app/dx12` / `app/vulkan` — Feature-level & capability probes only. No hooking of running games.
-- `app/upscaling` — `IUpscaler` interface + FSR/XeSS/Null implementations.
+- `app/upscaling` — `IUpscaler` interface + CSR/FSR/XeSS/Null implementations.
+  `app/upscaling/csr/` holds CSR's actual maths (EASU + RCAS, ported from
+  `csr/ref/csr.py`); it is the only upscaler in the registry this application
+  performs itself rather than merely configures, and `tests/test_csr.cpp`
+  pins it to `csr/ref/golden/*.json`.
 - `app/framegen` — `IFrameGenerator` interface + FSR3-FG/XeSS-FG stubs marked "game integration required."
 - `app/profiles` — JSON profile load/save with schema validation.
 - `app/logging` — Structured logs to `%LOCALAPPDATA%\UniversalFrameFX\logs`.

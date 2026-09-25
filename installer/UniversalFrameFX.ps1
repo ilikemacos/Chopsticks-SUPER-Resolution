@@ -178,6 +178,12 @@ function Get-UfxUpscalers($gpu, $plat) {
     $script:__rows = @()
 
     & $add 'None' 'Native (no upscaling)' $true '' 'The game renders at its native output resolution.'
+
+    # CSR is ours, and the only entry here that needs nothing from the game: it
+    # works on a finished frame, so there is no engine data to be missing. This
+    # edition still only writes profiles - see the note below.
+    & $add 'CSR' 'CSR (Chopsticks Super Resolution)' $true '' ('Spatial, derived from AMD FSR 1''s EASU + RCAS (MIT): a 16-tap edge-adaptive resolve with a Rec.709 luma direction estimate and a deringing clamp, then contrast-limited sharpening that adapts to local variance. Measured +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. Needs no game support. This PowerShell edition stores the choice in a profile; the frames are upscaled by the native build, which compiles CSR in.')
+
     & $add 'FSR1' 'FSR 1 (spatial)' $true '' 'Spatial upscaler; runs on any GPU. Needs the game to expose it.'
     & $add 'FSR2' 'FSR 2' $true '' 'Temporal: needs motion vectors, depth and jitter from the game.'
 
@@ -389,7 +395,7 @@ function Show-Dashboard {
     $t.Location = New-Object System.Drawing.Point(14, 12)
     $t.Size = New-Object System.Drawing.Size(646, 96)
     $t.Font = $FontBody; $t.ForeColor = $C.Muted; $t.BackColor = [System.Drawing.Color]::Transparent
-    $t.Text = "Universal FrameFX configures the upscalers a game already supports and manages profiles and backups. It does not add FSR/XeSS or frame generation to games that were not built for them. FPS numbers are never fabricated; the resolution figures on the Upscaling page are configuration estimates, labelled as such."
+    $t.Text = "Universal FrameFX configures the upscalers a game already supports and manages profiles and backups, and adds CSR - our own spatial upscaler, which works without game support because it only needs a finished frame. It does not add FSR/XeSS or frame generation to games that were not built for them; those need engine data no external tool can supply. FPS numbers are never fabricated; the resolution figures on the Upscaling page are configuration estimates, labelled as such."
     $note.Controls.Add($t)
     $content.Controls.Add($note)
 }
@@ -543,7 +549,7 @@ function Show-Profiles {
         return $cb
     }
     $apiBox = & $mk 'API' 158 @('DirectX 11','DirectX 12','Vulkan') 'DirectX 12'
-    $upBox  = & $mk 'Upscaler' 158 @('None','FSR1','FSR2','FSR3','FSR4','XeSS') 'FSR3'
+    $upBox  = & $mk 'Upscaler' 158 @('CSR','None','FSR1','FSR2','FSR3','FSR4','XeSS') 'CSR'
     $upBox.Left = $fx + 200
     (($content.Controls | Where-Object { $_ -is [System.Windows.Forms.Label] -and $_.Text -eq 'Upscaler' })[0]).Left = $fx + 200
 
@@ -658,7 +664,7 @@ function Show-About {
     $t = New-Object System.Windows.Forms.Label
     $t.Location = New-Object System.Drawing.Point(4, 50); $t.Size = New-Object System.Drawing.Size(700, 220)
     $t.Font = $FontBody; $t.ForeColor = $C.Muted; $t.BackColor = [System.Drawing.Color]::Transparent
-    $t.Text = "Universal FrameFX v$($script:AppVersion) (PowerShell edition)`r`n`r`nOpen source (MIT). A unified interface for configuring FSR, XeSS and frame generation for the games you already own.`r`n`r`nThis edition runs entirely on Windows PowerShell + .NET Windows Forms - no compilation required. GPU data is read from WMI and the driver, never guessed from the brand.`r`n`r`nIt never fakes support for a graphics technology, never fabricates FPS, and only modifies a game's own folder after taking a backup. It refuses to touch anti-cheat-protected folders.`r`n`r`nData directory: $($script:Root)"
+    $t.Text = "Universal FrameFX v$($script:AppVersion) (PowerShell edition)`r`n`r`nOpen source (MIT). A unified interface for configuring FSR, XeSS and frame generation for the games you already own, plus CSR - our own spatial upscaler, which needs no game support because it works on a finished frame.`r`n`r`nThis edition runs entirely on Windows PowerShell + .NET Windows Forms - no compilation required. GPU data is read from WMI and the driver, never guessed from the brand.`r`n`r`nIt never fakes support for a graphics technology, never fabricates FPS, and only modifies a game's own folder after taking a backup. It refuses to touch anti-cheat-protected folders.`r`n`r`nData directory: $($script:Root)"
     $content.Controls.Add($t)
 }
 
