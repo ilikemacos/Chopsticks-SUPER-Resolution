@@ -27,6 +27,12 @@ CASES = [
     ("noise_1_333x", (12, 12), (16, 16)),
     ("colour_bands_1_333x", (12, 12), (16, 16)),
     ("soft_midtone_1_5x", (10, 10), (15, 15)),
+    # These two exist because mutation testing showed that removing the
+    # deringing clamp did not fail any other case. On binary 0/1 content the
+    # final [0,1] clip masks overshoot; only midtone content, where overshoot
+    # stays inside range, actually exercises the clamp.
+    ("midtone_square_1_5x", (10, 10), (15, 15)),
+    ("midtone_diagonal_1_5x", (12, 12), (18, 18)),
 ]
 
 
@@ -50,6 +56,15 @@ def make_input(name: str, w: int, h: int) -> np.ndarray:
         # Mid contrast, so adaptive sharpening is actually permitted to act.
         g = 0.5 + 0.15 * np.sin(x * 1.1) * np.cos(y * 0.9)
         a = np.stack([g, g * 0.97, g * 0.93], -1)
+    elif name.startswith("midtone_square"):
+        # Isolated midtone feature: the strongest deringing exercise found.
+        a = np.full((h, w, 3), 0.35, np.float32)
+        a[h // 2 - 1:h // 2 + 1, w // 2 - 1:w // 2 + 1] = 0.75
+    elif name.startswith("midtone_diagonal"):
+        # Diagonal midtone edge: exercises the direction estimator and the clamp
+        # together.
+        g = np.where((x + y) > (w + h) // 2 - 1, 0.72, 0.28).astype(np.float32)
+        a = np.repeat(g[:, :, None], 3, axis=2)
     else:
         a = np.random.default_rng(11).random((h, w, 3))
     return np.ascontiguousarray(np.clip(a, 0, 1), dtype=np.float32)

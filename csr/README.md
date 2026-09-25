@@ -138,3 +138,21 @@ cd csr/ref && python3 export_golden.py  # regenerate the golden vectors
 The options rejected by ablation are **absent** from the C# port rather than
 present-and-disabled. They measured worse than FSR 1; leaving switches for them
 would only invite someone to turn them back on.
+
+## Shader verification
+
+The HLSL is not just compiled — it is **executed and diffed** against the same
+golden vectors as the C# port. `tools/shader-verify` compiles it to SPIR-V with
+glslang and runs it on Mesa's llvmpipe software Vulkan device, so it needs no GPU
+and works in CI.
+
+**All 9 cases × 2 passes match, worst deviation 4.4e-6** against a 1/255
+tolerance — float-precision agreement between HLSL, Python and C#.
+
+```bash
+cd tools/shader-verify && ./run.sh
+```
+
+Still unverified, and stated as such: that `fxc` compiles the same source to
+`cs_5_0` (needs Windows), and that a real GPU's `rcp`/`rsqrt` approximations stay
+inside tolerance (needs hardware). See `tools/shader-verify/README.md`.

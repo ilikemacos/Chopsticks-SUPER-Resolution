@@ -140,10 +140,23 @@ Both are implemented, for different jobs:
 |---|---|
 | `Csr.Core` CSR maths | **verified** — 24/24 tests against the Python reference |
 | `Csr.Capture` WGC + D3D11 | **compiles** (Windows-targeted, built on Linux CI) |
-| HLSL `cs_5_0` shaders | written, **not yet compiled or run** |
+| HLSL shaders | **compiled and executed** — 9 cases x 2 passes match the golden vectors, worst deviation 4.4e-6 vs 1/255 tolerance (`tools/shader-verify`) |
 | End-to-end on real hardware | **not done** — needs a Windows machine |
 
-The shaders and the capture path have never executed. They are written against
-the documented APIs and they compile, but "compiles" is not "works". The first
-hardware run should check, in order: the golden-vector diff between the HLSL and
-the CPU port, then `LastGpuMilliseconds`, then measured end-to-end latency.
+The shader maths is now verified by execution, not just compilation: see
+`tools/shader-verify`, which compiles the HLSL to SPIR-V and runs it on llvmpipe,
+diffing against the same golden vectors as the C# port. Worst deviation 4.4e-6.
+
+Two things that verification deliberately does **not** cover:
+
+1. **`fxc` to `cs_5_0`.** The shipping target is D3D11 SM5.0, which only
+   `fxc`/`d3dcompiler` produces and only on Windows. The harness compiles the same
+   HLSL to SPIR-V via glslang. No SM6-only constructs are used, so it should
+   translate — but that is an inference, not a test.
+2. **Real GPU precision.** llvmpipe computes `rcp`/`rsqrt` exactly; hardware uses
+   fast approximations, which is why the tolerance is 1/255 rather than exact. A
+   real GPU may deviate more.
+
+The capture path has still never executed. The first hardware run should check,
+in order: `fxc` compiles the shaders to `cs_5_0`; the golden-vector diff on the
+real GPU; then `LastGpuMilliseconds`; then measured end-to-end latency.
