@@ -81,7 +81,10 @@ public partial class UpscalingView : UserControl
                 Integration.Native => "Needs game support",
                 _ => "Not possible",
             },
-            u.Integration == Integration.External ? "Ok" : "Muted");
+            // Green only when this build can actually do it. "Works on any app" is
+            // true of the technology; a Preview row has not earned the colour.
+            u.Integration == Integration.External && u.Stage == Stage.Shipping
+                ? "Ok" : "Muted");
         integration.Margin = new Thickness(0, 0, 8, 0);
         Grid.SetColumn(integration, 1);
         header.Children.Add(integration);

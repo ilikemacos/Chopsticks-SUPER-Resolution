@@ -24,6 +24,32 @@ public enum Integration
     Unavailable,
 }
 
+/// <summary>
+/// How far along a capability is in THIS build, independent of whether the
+/// technology allows it at all.
+/// </summary>
+/// <remarks>
+/// These are different questions and conflating them is how a UI ends up
+/// claiming support that does not exist. <see cref="Integration"/> says what the
+/// technology permits; Stage says what this application can currently do about
+/// it. A row may be perfectly possible in principle and still be
+/// <see cref="Preview"/> here.
+/// </remarks>
+public enum Stage
+{
+    /// <summary>Implemented and usable now, on the path the row describes.</summary>
+    Shipping,
+
+    /// <summary>
+    /// The algorithm is implemented and tested, but not yet on the path the row
+    /// describes — so the row must not be presented as ready to use.
+    /// </summary>
+    Preview,
+
+    /// <summary>Not implemented in this build.</summary>
+    NotImplemented,
+}
+
 /// <summary>A physical display adapter. Vendor, IDs, VRAM and driver come from WMI
 /// and the driver registry key. Architecture is inferred — see <see cref="ArchCertainty"/>.</summary>
 public sealed class GpuInfo
@@ -96,13 +122,24 @@ public sealed class CapabilityRow
     public bool? Determined { get; set; } = true;
 
     public Integration Integration { get; set; } = Integration.Native;
+
+    /// <summary>How much of this row is actually implemented in this build.</summary>
+    public Stage Stage { get; set; } = Stage.Shipping;
+
     public string Reason { get; set; } = "";
     public string Requirements { get; set; } = "";
 
     /// <summary>Short, honest pill text for this row.</summary>
+    /// <remarks>
+    /// <see cref="Stage"/> is checked before <see cref="Integration"/> on purpose.
+    /// "Works on any app" is a statement about the technology; whether this build
+    /// can do it is a separate fact, and the pill must report the second.
+    /// </remarks>
     public string StatusText => Determined is null
         ? "Undetermined"
         : !HardwareOk ? "Not supported"
+        : Stage == Stage.NotImplemented ? "Not implemented"
+        : Stage == Stage.Preview ? "Preview only"
         : Integration == Integration.External ? "Ready to use"
         : "Hardware OK";
 
@@ -110,6 +147,8 @@ public sealed class CapabilityRow
     public string StatusBrush => Determined is null
         ? "Warn"
         : !HardwareOk ? "Bad"
+        : Stage == Stage.NotImplemented ? "Bad"
+        : Stage == Stage.Preview ? "Warn"
         : Integration == Integration.External ? "Ok"
         : "Accent";
 }

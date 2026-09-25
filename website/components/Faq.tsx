@@ -1,11 +1,15 @@
 const faqs = [
   {
     q: "Can Universal FrameFX add FSR or XeSS to any game?",
-    a: "Not FSR 2/3/4 or XeSS, and any tool that claims to is misleading you: temporal upscalers need motion vectors, depth buffers and jitter offsets that only the game engine produces. What can be applied to any window is spatial upscaling, because it works on a finished frame — that is what CSR is, and it is the only upscaler here that needs no game support. Otherwise Universal FrameFX configures the upscalers a game already ships, and — where a public, redistributable wrapper DLL exists — can drop it into a specific game folder with a full backup.",
+    a: "Not FSR 2/3/4 or XeSS, and any tool that claims to is misleading you: temporal upscalers need motion vectors, depth buffers and jitter offsets that only the game engine produces. The kind that can work on any window is spatial, because it operates on a finished frame — that is what CSR is, and it is the only upscaler here that needs no game support. To be clear about the current state: CSR itself is finished and tested, but applying it to a live window is not, so today the app runs it on an image you choose. Everything else Universal FrameFX does is configure the upscalers a game already ships, and — where a public, redistributable wrapper DLL exists — drop it into a specific game folder with a full backup.",
   },
   {
     q: "What is CSR, and is it as good as FSR 2 or DLSS?",
     a: "CSR (Chopsticks Super Resolution) is our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS design and reimplemented from its MIT-licensed source: a 16-tap edge-adaptive resolve with a deringing clamp, then contrast-limited sharpening that adapts to local variance. Against the same references it measures +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. It is not comparable to FSR 2 or DLSS: those reconstruct detail from previous frames, and no spatial filter can recover detail the game never rendered. Expect clearly better than a plain resample, not native quality. It also costs GPU time and creates no frames, so no FPS figure attaches to it.",
+  },
+  {
+    q: "Why is CSR based on FSR 1 and not on XeSS?",
+    a: "Because XeSS cannot be a starting point for this, and the reason is structural rather than a matter of effort. XeSS is a temporal, machine-learning upscaler: it needs motion vectors, depth and jitter from the renderer, and it needs trained network weights that ship as an Intel binary. None of that is available from outside a game's process, and bundling vendor binaries is something this project does not do. FSR 1 is the opposite on every count — spatial, pure arithmetic, no engine data, no weights, and published by AMD under the MIT licence, so it can be reimplemented with attribution. That is why CSR derives from FSR 1's EASU + RCAS. XeSS remains in the app as what it honestly is: a technology the game itself must ship, which we detect and configure.",
   },
   {
     q: "Does it work on my NVIDIA / Intel GPU?",

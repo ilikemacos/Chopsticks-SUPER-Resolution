@@ -20,6 +20,7 @@ import {
   QUALITY_PRESETS,
   integrationLabel,
   methodById,
+  stageLabel,
   planResolution,
   presetById,
   resolveMethods,
@@ -67,7 +68,7 @@ export function UpscalingPanel({
       <PanelHeading
         kicker="Works without game support"
         title="Universal Upscaling"
-        blurb="CSR runs on the frames a window already presents, so it works with any game or application. Set the game's own resolution to the render resolution below; CSR scales its output up to your display. Temporal upscalers cannot work this way — they need motion vectors and depth that only the renderer has."
+        blurb="CSR works on a finished frame, so unlike a temporal upscaler it needs nothing from the renderer — no motion vectors, no depth, no jitter. Plan a configuration here: set the game's own resolution to the render resolution below and CSR scales that up to your display. Applying it to a live window is not finished yet; the desktop app currently runs CSR on an image you pick."
       />
 
       <div className="mb-6 grid gap-4 lg:grid-cols-[1.1fr_1fr]">
@@ -117,10 +118,23 @@ export function UpscalingPanel({
           {method ? (
             <div className="mt-4 rounded-xl border border-border bg-card/40 p-4">
               <div className="mb-2 flex flex-wrap items-center gap-2">
-                <Pill tone={method.integration === "external" ? "accent" : method.integration === "native" ? "muted" : "bad"}>
+                <Pill
+                  tone={
+                    method.integration === "external" && method.stage !== "preview"
+                      ? "accent"
+                      : method.integration === "native" || method.stage === "preview"
+                        ? "muted"
+                        : "bad"
+                  }
+                >
                   {integrationLabel[method.integration]}
                 </Pill>
                 <Pill>{method.kind}</Pill>
+                {method.stage && method.stage !== "shipping" ? (
+                  <Pill tone={method.stage === "preview" ? "warn" : "bad"}>
+                    {stageLabel[method.stage]}
+                  </Pill>
+                ) : null}
                 {method.requires ? <Pill tone="warn">{method.requires}</Pill> : null}
               </div>
               <p className="text-xs leading-relaxed text-muted">{method.note}</p>

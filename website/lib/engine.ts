@@ -20,12 +20,30 @@ export const integrationLabel: Record<Integration, string> = {
   unavailable: "Not available",
 };
 
+/**
+ * How far along a method is in the shipped app, independent of whether the
+ * technology allows it at all.
+ *
+ * These are separate questions, and conflating them is how a site ends up
+ * claiming support that does not exist. `integration` says what the technology
+ * permits; `stage` says what the app can currently do about it.
+ */
+export type Stage = "shipping" | "preview" | "not-implemented";
+
+export const stageLabel: Record<Stage, string> = {
+  shipping: "Available now",
+  preview: "Preview",
+  "not-implemented": "Not implemented",
+};
+
 export interface Method {
   id: string;
   name: string;
   /** Spatial = works on a finished frame. Temporal = needs engine data. */
   kind: "spatial" | "temporal" | "framegen";
   integration: Integration;
+  /** What the app can actually do about it today. Defaults to "shipping". */
+  stage?: Stage;
   /** Why it is limited / unavailable. Always shown when not plainly available. */
   note: string;
   /** Hardware requirement, when there is a real one. */
@@ -48,14 +66,21 @@ export const METHODS: Method[] = [
     name: "CSR (Chopsticks Super Resolution)",
     kind: "spatial",
     integration: "external",
+    // The upscaler is implemented and tested against a pinned reference, but the
+    // desktop app currently runs it on an image you pick, not on a live window.
+    // The window-capture path is written and unverified on real hardware. Until
+    // that runs, "works on any app" describes the design, not the build.
+    stage: "preview",
     note:
       "Our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS design: a " +
       "16-tap edge-adaptive resolve with a Rec.709 luma direction estimate and a " +
       "deringing clamp, then contrast-limited sharpening that adapts to local " +
       "variance. Measured against the same references, it is +1.48 dB PSNR over " +
-      "FSR 1 and +1.90 dB over bilinear. Runs on the frames a window already " +
-      "presents, so it works with any game or application. Spatial only — it " +
-      "cannot reconstruct detail the game never rendered, and it also scales the HUD.",
+      "FSR 1 and +1.90 dB over bilinear. Because it needs no engine data it is the " +
+      "one upscaler here that can be applied from outside a game — but in the " +
+      "current build it runs on an image you choose, not yet on a live window. " +
+      "Spatial only: it cannot reconstruct detail the game never rendered, and it " +
+      "would also scale the HUD.",
   },
   {
     id: "fsr1",
@@ -323,6 +348,19 @@ export function resolveMethods(gpu: GpuGuess | null): MethodAvailability[] {
     }
 
     if (method.integration === "external") {
+      // Possible on this hardware, but say what the build does rather than what
+      // the technology allows — a green "works on any window" would be read as
+      // "available today".
+      if (method.stage === "preview") {
+        return {
+          method,
+          possible: null,
+          verdict:
+            "Needs no game support, and the upscaler itself is implemented and " +
+            "tested — but this build applies it to an image you choose, not yet " +
+            "to a live window.",
+        };
+      }
       return {
         method,
         possible: true,

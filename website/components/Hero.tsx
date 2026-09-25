@@ -34,9 +34,9 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-          CSR, our own spatial upscaler, applied to any window — plus real GPU
-          detection, a game inspector, per-app profiles and measured benchmarks.
-          Honest about what each technology can and cannot do.
+          CSR, our own spatial upscaler — plus real GPU detection, a game
+          inspector, per-app profiles and measured benchmarks. Honest about what
+          each technology can and cannot do, and about what is finished.
         </p>
 
         <div className="mt-9 flex flex-wrap items-center justify-center gap-3">

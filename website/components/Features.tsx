@@ -5,11 +5,11 @@ const features = [
   },
   {
     title: "CSR — our own upscaler",
-    body: "Chopsticks Super Resolution: a 16-tap edge-adaptive resolve with contrast-limited, variance-adaptive sharpening, derived from FSR 1's EASU + RCAS. It needs no engine data, so it is the one upscaler here that works on any app. Measured at +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear.",
+    body: "Chopsticks Super Resolution: a 16-tap edge-adaptive resolve with contrast-limited, variance-adaptive sharpening, derived from FSR 1's EASU + RCAS. Measured at +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. Needing no engine data, it is the one upscaler here that could be applied from outside a game — today it runs on an image you choose, and the live window-capture path is written but not yet verified.",
   },
   {
     title: "Unified upscaling front-end",
-    body: "CSR plus FSR 1/2/3, FSR 4 (RDNA 4 detected at runtime) and XeSS in one panel. Only the quality modes each implementation actually supports are shown, and anything that needs the game to ship it is labelled that way.",
+    body: "CSR plus FSR 1/2/3, FSR 4 (RDNA 4 detected at runtime) and XeSS in one panel. Only the quality modes each implementation actually supports are shown, anything that needs the game to ship it is labelled that way, and anything still in preview says so.",
   },
   {
     title: "GPU switching",

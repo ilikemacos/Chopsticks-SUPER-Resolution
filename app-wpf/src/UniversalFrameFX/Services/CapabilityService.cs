@@ -28,13 +28,24 @@ public static class CapabilityService
                 HardwareOk = plat.DX11,
                 Determined = plat.DX11 ? true : (bool?)false,
                 Integration = Integration.External,
-                Reason = plat.DX11 ? "" : "Requires a Direct3D 11 capable GPU.",
+                // Preview, not Shipping: the upscaler is implemented and tested,
+                // but this build applies it to an image you choose, not to a live
+                // window. The window-capture path exists in csr/src/Csr.Capture
+                // and is not referenced by this app, nor has it run on real
+                // hardware. Until it does, saying "works on any app" here would
+                // be a claim about the design rather than about this build.
+                Stage = Stage.Preview,
+                Reason = plat.DX11
+                    ? "Preview in this build: CSR runs on an image you pick, not yet on "
+                      + "a live game window. Live window capture is written but has not "
+                      + "been verified on real hardware."
+                    : "Requires a Direct3D 11 capable GPU.",
                 Requirements =
-                    "Spatial, applied by FrameFX to a captured window — works without " +
-                    "game integration. Derived from FSR 1 and measured +0.74 dB PSNR " +
-                    "over it on edge detail. Adds about one frame of latency, and costs " +
-                    "GPU time, so it only pays off when the game renders fewer pixels " +
-                    "than it presents.",
+                    "Spatial, and needs no game integration — it works on a finished "
+                    + "frame. Derived from FSR 1's EASU + RCAS and measured +1.48 dB PSNR "
+                    + "over FSR 1 and +1.90 dB over bilinear on the reference patterns. "
+                    + "It costs GPU time and creates no frames, so it only pays off when "
+                    + "the game renders fewer pixels than it presents.",
             },
 
             new()
