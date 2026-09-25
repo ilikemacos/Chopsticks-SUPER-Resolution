@@ -12,7 +12,7 @@ export function Download() {
         </h2>
         <p className="mt-3 max-w-2xl text-muted">
           The native desktop app is a real double-click{" "}
-          <code className="font-mono text-primary">.exe</code> — .NET 8 / WPF,
+          <code className="font-mono text-primary">.exe</code> (.NET 8 / WPF),
           dark modern UI, no install step and no admin rights. The .NET runtime is
           bundled, so nothing else is required.
         </p>
@@ -22,7 +22,7 @@ export function Download() {
             href={site.appExeUrl}
             className="rounded-xl bg-primary px-6 py-3 font-semibold text-primaryFg shadow-glow transition-colors hover:bg-primary/90"
           >
-            Download the app ({site.appVersion} · .exe)
+            Download the app ({site.appVersion}, .exe)
           </a>
           {site.installersReady && (
             <>
@@ -50,26 +50,10 @@ export function Download() {
         <p className="mt-3 text-xs leading-relaxed text-faint">
           The <code className="font-mono">.exe</code> is the self-contained WPF
           app (no install), built from source on Windows CI with a SHA-256
-          checksum.
-          {site.installersReady ? (
-            <>
-              {" "}The <code className="font-mono">.msi</code> installs
-              per-machine into Program Files (needs admin). The{" "}
-              <code className="font-mono">.zip</code> is the portable C++ build
-              and bundles the CSR command-line tools —{" "}
-              <code className="font-mono">ufx-upscale</code> (upscale a file) and{" "}
-              <code className="font-mono">ufx-live</code> (the CSR real-time
-              loop).
-            </>
-          ) : (
-            <>
-              {" "}An <code className="font-mono">.msi</code> installer and a
-              portable <code className="font-mono">.zip</code> bundling the CSR
-              command-line tools (<code className="font-mono">ufx-upscale</code>,{" "}
-              <code className="font-mono">ufx-live</code>) ship with the next
-              release.
-            </>
-          )}
+          checksum.{" "}
+          {site.installersReady
+            ? "An .msi installer (per-machine, needs admin) and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) are also available."
+            : "An .msi installer and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) ship with the next release."}
         </p>
 
         <div className="mt-8 grid gap-4 text-sm text-muted sm:grid-cols-2">
@@ -78,7 +62,7 @@ export function Download() {
             <p className="mt-1.5 leading-relaxed">
               Real GPU detection, GPU switching, an honest capability matrix for
               FSR / XeSS / frame generation, per-game profiles, and one-click
-              auto-update. Self-contained — no runtime to install.
+              auto-update. Self-contained, no runtime to install.
             </p>
           </div>
           <div className="rounded-2xl border border-border bg-card/40 p-5">
@@ -121,8 +105,8 @@ export function Download() {
         <p className="mt-5 text-xs leading-relaxed text-faint">
           Nothing here disables Windows Defender or SmartScreen, uses hidden
           downloads, or requests elevation it does not need. Because the app is
-          not code-signed, SmartScreen may prompt once — choose “More info → Run
-          anyway”. Source, build and checksums are on GitHub.
+          not code-signed, SmartScreen may prompt once; choose &ldquo;More info
+          &rarr; Run anyway&rdquo;. Source, build and checksums are on GitHub.
         </p>
       </div>
     </section>
