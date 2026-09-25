@@ -182,7 +182,7 @@ function Get-UfxUpscalers($gpu, $plat) {
     # CSR is ours, and the only entry here that needs nothing from the game: it
     # works on a finished frame, so there is no engine data to be missing. This
     # edition still only writes profiles - see the note below.
-    & $add 'CSR' 'CSR (Chopsticks Super Resolution)' $true '' ('Spatial, derived from AMD FSR 1''s EASU + RCAS (MIT): a 16-tap edge-adaptive resolve with a Rec.709 luma direction estimate and a deringing clamp, then contrast-limited sharpening that adapts to local variance. Measured +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. Needs no game support. This PowerShell edition stores the choice in a profile; the frames are upscaled by the native build, which compiles CSR in.')
+    & $add 'CSR' 'CSR (Chopsticks Super Resolution)' $true '' ('Spatial, derived from AMD FSR 1''s EASU + RCAS (MIT): a 16-tap edge-adaptive resolve with a Rec.709 luma direction estimate and a deringing clamp, then contrast-limited sharpening that adapts to local variance. Measured +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear. Needs no game support. Use ''Upscale an image with CSR'' below to run it on an image file (via the bundled ufx-upscale tool); for games this edition stores the choice in a profile.')
 
     & $add 'FSR1' 'FSR 1 (spatial)' $true '' 'Spatial upscaler; runs on any GPU. Needs the game to expose it.'
     & $add 'FSR2' 'FSR 2' $true '' 'Temporal: needs motion vectors, depth and jitter from the game.'
@@ -225,6 +225,28 @@ function Get-UfxScaleRatio([string]$mode) {
         'Ultra Performance' { 3.0 }
         default             { 1.0 }
     }
+}
+
+# Locates ufx-upscale.exe - the compiled CSR upscaler. This PowerShell edition
+# performs no pixel work itself; when the tool is present (installed by the MSI,
+# shipped beside this script, or on PATH) it can run a real CSR upscale.
+function Find-UfxUpscaler {
+    $candidates = @()
+    if ($PSScriptRoot) { $candidates += Join-Path $PSScriptRoot 'ufx-upscale.exe' }
+    $candidates += Join-Path $script:Root 'ufx-upscale.exe'
+    $pf = [Environment]::GetFolderPath('ProgramFiles')
+    if ($pf) { $candidates += Join-Path $pf 'Universal FrameFX\ufx-upscale.exe' }
+    foreach ($c in $candidates) { if ($c -and (Test-Path $c)) { return $c } }
+    $onPath = Get-Command 'ufx-upscale.exe' -ErrorAction SilentlyContinue
+    if ($onPath) { return $onPath.Source }
+    return $null
+}
+
+# Runs a real CSR upscale by invoking the tool. Returns $true on success.
+function Invoke-UfxUpscale([string]$exe, [string]$inPath, [string]$outPath, [string]$quality) {
+    $argList = @($inPath, $outPath, '--quality', $quality)
+    $p = Start-Process -FilePath $exe -ArgumentList $argList -NoNewWindow -Wait -PassThru
+    return ($p.ExitCode -eq 0 -and (Test-Path $outPath))
 }
 
 # --------------------------------------------------------------------------
@@ -484,6 +506,67 @@ function Show-Upscaling {
     }).GetNewClosure())
     $calc.Controls.Add($calcBtn)
     $content.Controls.Add($calc)
+    $y += 166
+
+    # Real CSR upscale of an image file, via the compiled tool. This is the one
+    # place this edition performs actual upscaling rather than configuration.
+    $up = New-Card 4 $y 720 172
+    $up.Controls.Add((New-Label 'Upscale an image with CSR' 16 12 690 $FontHeading $C.Text))
+    $exe = Find-UfxUpscaler
+    if (-not $exe) {
+        $msg = New-Object System.Windows.Forms.Label
+        $msg.Location = New-Object System.Drawing.Point(16, 46); $msg.Size = New-Object System.Drawing.Size(688, 110)
+        $msg.Font = $FontSmall; $msg.ForeColor = $C.Muted; $msg.BackColor = [System.Drawing.Color]::Transparent
+        $msg.Text = ("The CSR upscaler tool (ufx-upscale.exe) was not found. This PowerShell edition drives it rather than reimplementing the maths. " +
+                     "Install the Universal FrameFX MSI, or place ufx-upscale.exe beside this script, to upscale images here.")
+        $up.Controls.Add($msg)
+    } else {
+        $up.Controls.Add((New-Label 'Input' 16 46 50 $FontSmall $C.Muted))
+        $inBox = New-Object System.Windows.Forms.TextBox; $inBox.Location = New-Object System.Drawing.Point(70, 44); $inBox.Width = 430; $inBox.ReadOnly = $true
+        $up.Controls.Add($inBox)
+        $inBtn = New-Object System.Windows.Forms.Button
+        $inBtn.Text = 'Browse...'; $inBtn.Location = New-Object System.Drawing.Point(510, 43); $inBtn.Width = 90
+        $inBtn.FlatStyle = 'Flat'; $inBtn.BackColor = $C.Surface; $inBtn.ForeColor = $C.Text
+        $inBtn.Add_Click(({
+            $d = New-Object System.Windows.Forms.OpenFileDialog
+            $d.Filter = 'Images|*.png;*.jpg;*.jpeg;*.bmp;*.tga|All files|*.*'
+            if ($d.ShowDialog() -eq 'OK') { $inBox.Text = $d.FileName }
+        }).GetNewClosure())
+        $up.Controls.Add($inBtn)
+
+        $up.Controls.Add((New-Label 'Mode' 16 80 50 $FontSmall $C.Muted))
+        $qBox = New-Object System.Windows.Forms.ComboBox; $qBox.DropDownStyle = 'DropDownList'
+        [void]$qBox.Items.AddRange(@('Ultra Quality','Quality','Balanced','Performance','Ultra Performance'))
+        $qBox.SelectedItem = 'Quality'; $qBox.Location = New-Object System.Drawing.Point(70, 78); $qBox.Width = 150
+        $up.Controls.Add($qBox)
+
+        $upStatus = New-Object System.Windows.Forms.Label
+        $upStatus.Location = New-Object System.Drawing.Point(16, 128); $upStatus.Size = New-Object System.Drawing.Size(688, 36)
+        $upStatus.Font = $FontSmall; $upStatus.ForeColor = $C.Muted; $upStatus.BackColor = [System.Drawing.Color]::Transparent
+        $up.Controls.Add($upStatus)
+
+        $goBtn = New-Object System.Windows.Forms.Button
+        $goBtn.Text = 'Upscale...'; $goBtn.Location = New-Object System.Drawing.Point(240, 78); $goBtn.Width = 110
+        $goBtn.FlatStyle = 'Flat'; $goBtn.BackColor = $C.Accent; $goBtn.ForeColor = [System.Drawing.Color]::White; $goBtn.FlatAppearance.BorderSize = 0
+        $goBtn.Add_Click(({
+            if (-not $inBox.Text -or -not (Test-Path $inBox.Text)) { $upStatus.ForeColor = $C.Bad; $upStatus.Text = 'Choose an input image first.'; return }
+            $save = New-Object System.Windows.Forms.SaveFileDialog
+            $save.Filter = 'PNG image|*.png'; $save.FileName = 'upscaled.png'
+            if ($save.ShowDialog() -ne 'OK') { return }
+            $upStatus.ForeColor = $C.Muted; $upStatus.Text = 'Upscaling with CSR...'; $goBtn.Enabled = $false
+            try {
+                if (Invoke-UfxUpscale $exe $inBox.Text $save.FileName ([string]$qBox.SelectedItem)) {
+                    $upStatus.ForeColor = $C.Ok; $upStatus.Text = ("Done - wrote {0}" -f $save.FileName)
+                } else {
+                    $upStatus.ForeColor = $C.Bad; $upStatus.Text = 'CSR upscale failed. See the tool output.'
+                }
+            } catch {
+                $upStatus.ForeColor = $C.Bad; $upStatus.Text = ("Error: {0}" -f $_.Exception.Message)
+            } finally { $goBtn.Enabled = $true }
+        }).GetNewClosure())
+        $up.Controls.Add($goBtn)
+    }
+    $content.Controls.Add($up)
 }
 
 function Show-FrameGen {

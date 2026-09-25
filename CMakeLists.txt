@@ -26,6 +26,15 @@ FetchContent_Declare(json
     GIT_TAG v3.11.3)
 FetchContent_MakeAvailable(json)
 
+# stb: public-domain single-header image codecs, for the CSR file upscaler.
+# Header-only and not a CMake project, so we expose it as an interface target.
+FetchContent_Declare(stb
+    GIT_REPOSITORY https://github.com/nothings/stb.git
+    GIT_TAG 5c205738c191bcb0abc65c4febfa9bd25ff35234)
+FetchContent_MakeAvailable(stb)
+add_library(stb INTERFACE)
+target_include_directories(stb INTERFACE ${stb_SOURCE_DIR})
+
 if(UFX_BUILD_TESTS)
     FetchContent_Declare(googletest
         GIT_REPOSITORY https://github.com/google/googletest.git

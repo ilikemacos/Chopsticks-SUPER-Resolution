@@ -6,7 +6,13 @@ A unified, open-source Windows 11 interface for configuring FidelityFX Super Res
 
 ## Features
 
-- GPU detection: NVIDIA / AMD / Intel, VRAM, driver version, DirectX feature level, Vulkan availability.
+- **CSR (Chopsticks Super Resolution)** — our own spatial upscaler, derived from AMD FSR 1's EASU + RCAS and compiled into the app. It needs nothing from a game engine, so it is the one upscaler here the app runs itself. Upscale any image from the command line:
+
+  ```
+  ufx-upscale input.png output.png --quality Performance
+  ```
+
+  Measured +1.48 dB PSNR over FSR 1 and +1.90 dB over bilinear on the reference patterns; verified against `csr/ref/golden/*.json`. It reconstructs edges better than a plain resize but cannot invent detail the source never had — it is not FSR 2 / DLSS / XeSS, which reconstruct from engine motion vectors and depth.
 - Upscaling front-end for FSR 1/2/3, FSR 4 (RDNA 4 detected at runtime), XeSS 1.x, plus "no upscaling".
 - Frame-generation front-end that clearly labels **which games actually support it**.
 - Per-game JSON profiles with import/export.
@@ -74,7 +80,9 @@ Universal FrameFX never modifies files outside a game's own folder and never mod
 
 ## Limitations
 
-- No general-purpose upscaler injection. Upscalers need motion vectors, depth, and jitter, which only the game engine can supply.
+- CSR is spatial: it runs on a finished image and genuinely upscales one (see the tool above), but it cannot recover detail the source never rendered and it scales the HUD too. It is not a substitute for a temporal upscaler's reconstruction.
+- No injection of *temporal* upscalers (FSR 2/3/4, XeSS). Those need motion vectors, depth and jitter that only the game engine can supply, so they can only be enabled by the game itself.
+- Live capture of an arbitrary game window and upscaling it in real time is not shipped: today CSR upscales image files (the `ufx-upscale` tool) and the app's preview, not a running game's frames.
 - Frame generation for games that never shipped with it cannot be added by an external tool.
 - FSR 4 requires RDNA 4 hardware and a game update that ships FSR 4; UFX will detect and label this honestly.
 - Anti-cheat: Never inject into online/multiplayer titles. The default profile refuses to write into folders whose executables are flagged by EAC / BattlEye / VAC signatures.

@@ -5,6 +5,7 @@ add_executable(ufx_tests
     test_scanner.cpp
     test_upscalers.cpp
     test_csr.cpp
+    test_upscale_cli.cpp
     test_framegen.cpp)
 
 target_link_libraries(ufx_tests PRIVATE ufx_core GTest::gtest_main)

@@ -35,6 +35,9 @@ jobs:
           $stage = "stage/UniversalFrameFX"
           New-Item -ItemType Directory -Path $stage -Force | Out-Null
           Copy-Item build/app/Release/UniversalFrameFX.exe $stage/
+          # ufx-upscale.exe is the actual CSR file upscaler. Shipping it is what
+          # makes "it upscales" true of the release, not just of the source tree.
+          Copy-Item build/app/Release/ufx-upscale.exe $stage/
           Copy-Item README.md, LICENSE $stage/
           Copy-Item installer/uninstall.ps1 $stage/
           Copy-Item -Recurse examples $stage/examples

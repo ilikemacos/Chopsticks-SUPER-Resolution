@@ -14,6 +14,10 @@ set(UFX_CORE_SOURCES
     upscaling/csr/CsrCore.h
     upscaling/CsrUpscaler.cpp
     upscaling/CsrUpscaler.h
+    upscaling/csr/ImageIo.cpp
+    upscaling/csr/ImageIo.h
+    cli/UpscaleCommand.cpp
+    cli/UpscaleCommand.h
     upscaling/FsrUpscaler.cpp
     upscaling/FsrUpscaler.h
     upscaling/XessUpscaler.cpp
@@ -39,7 +43,7 @@ set(UFX_CORE_SOURCES
 
 add_library(ufx_core STATIC ${UFX_CORE_SOURCES})
 target_include_directories(ufx_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(ufx_core PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(ufx_core PUBLIC nlohmann_json::nlohmann_json PRIVATE stb)
 
 if(WIN32)
     target_sources(ufx_core PRIVATE
@@ -66,3 +70,9 @@ if(UFX_BUILD_APP AND WIN32)
         VS_DPI_AWARE "PerMonitor"
         WIN32_EXECUTABLE TRUE)
 endif()
+
+# ufx-upscale: standalone console upscaler. Ships beside the GUI in the zip and
+# MSI, and is what the PowerShell edition and any script can call to actually
+# upscale a file.
+add_executable(ufx-upscale cli/UpscaleMain.cpp)
+target_link_libraries(ufx-upscale PRIVATE ufx_core)
