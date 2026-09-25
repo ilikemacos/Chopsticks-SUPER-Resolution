@@ -25,12 +25,35 @@ export function Download() {
             Download the app ({site.appVersion} · .exe)
           </a>
           <a
+            href={site.appMsiUrl}
+            className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
+          >
+            Installer (.msi)
+          </a>
+          <a
+            href={site.appZipUrl}
+            className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
+          >
+            Portable (.zip)
+          </a>
+          <a
             href={site.releasesUrl}
             className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
           >
             All releases &amp; checksums
           </a>
         </div>
+        <p className="mt-3 text-xs leading-relaxed text-faint">
+          The <code className="font-mono">.exe</code> is the self-contained WPF
+          app (no install). The <code className="font-mono">.msi</code> installs
+          per-machine into Program Files (needs admin). The{" "}
+          <code className="font-mono">.zip</code> is the portable C++ build and
+          bundles the CSR command-line tools —{" "}
+          <code className="font-mono">ufx-upscale</code> (upscale a file) and{" "}
+          <code className="font-mono">ufx-live</code> (the CSR real-time loop).
+          All three are built from source on Windows CI and carry SHA-256
+          checksums.
+        </p>
 
         <div className="mt-8 grid gap-4 text-sm text-muted sm:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card/40 p-5">

@@ -2,11 +2,17 @@
 const rawBase =
   "https://raw.githubusercontent.com/ilikemacos/Chopsticks-SUPER-Resolution/claude/great-babbage-lqfk8p/website/public";
 
-// The native desktop app is published as a GitHub Release asset. Proxying it
-// keeps the download link same-origin; GitHub answers with a redirect to its
-// CDN, so this stays lightweight.
-const appExeUrl =
-  "https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/download/v0.2.0/UniversalFrameFX.exe";
+// The native desktop app and the Windows installers are published as GitHub
+// Release assets, built on Windows CI by the wpf-app.yml (.exe) and package.yml
+// (.zip + .msi) workflows when a v* tag is pushed. Proxying them keeps the
+// download links same-origin; GitHub answers with a redirect to its CDN, so this
+// stays lightweight. These point at the current release tag.
+const releaseTag = "v0.3.0";
+const releaseBase =
+  `https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/download/${releaseTag}`;
+const appExeUrl = `${releaseBase}/UniversalFrameFX.exe`;
+const appMsiUrl = `${releaseBase}/UniversalFrameFX-x64.msi`;
+const appZipUrl = `${releaseBase}/UniversalFrameFX-x64.zip`;
 
 const nextConfig = {
   reactStrictMode: true,
@@ -20,6 +26,22 @@ const nextConfig = {
       {
         source: "/UniversalFrameFX.exe",
         destination: appExeUrl,
+      },
+      {
+        source: "/UniversalFrameFX-x64.msi",
+        destination: appMsiUrl,
+      },
+      {
+        source: "/UniversalFrameFX-x64.msi.sha256",
+        destination: `${appMsiUrl}.sha256`,
+      },
+      {
+        source: "/UniversalFrameFX-x64.zip",
+        destination: appZipUrl,
+      },
+      {
+        source: "/UniversalFrameFX-x64.zip.sha256",
+        destination: `${appZipUrl}.sha256`,
       },
       {
         source: "/UniversalFrameFX-portable.zip",

@@ -5,7 +5,7 @@ namespace UniversalFrameFX.Services;
 /// <summary>Hardware/platform detected once at startup and shared across the UI.</summary>
 public static class AppState
 {
-    public const string Version = "0.2.0";
+    public const string Version = "0.3.0";
 
     public static IReadOnlyList<GpuInfo> Gpus { get; private set; } = new List<GpuInfo>();
     public static PlatformInfo Platform { get; private set; } = new();

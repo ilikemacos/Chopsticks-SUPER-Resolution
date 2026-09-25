@@ -9,7 +9,7 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>UniversalFrameFX</AssemblyName>
     <RootNamespace>UniversalFrameFX</RootNamespace>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Product>Universal FrameFX</Product>
     <Company>Universal FrameFX (open source)</Company>
     <Description>A unified, honest interface for configuring AMD FSR, Intel XeSS and frame generation.</Description>
