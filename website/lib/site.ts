@@ -16,7 +16,11 @@ export const site = {
   // tools (ufx-upscale, ufx-live).
   appMsiUrl: "/UniversalFrameFX-x64.msi",
   appZipUrl: "/UniversalFrameFX-x64.zip",
-  appVersion: "v0.3.0",
+  // The downloadable native app today is v0.2.0 (its release carries the .exe).
+  appVersion: "v0.2.0",
+  // The .msi and portable .zip ship with the v0.3.0 release; until that CI build
+  // is published, hide those two buttons rather than link to assets that 404.
+  installersReady: false,
   // The runnable PowerShell edition, served directly from this site — no
   // compiler, no GitHub redirect. Relative paths download from this origin.
   portableZipUrl: "/UniversalFrameFX-portable.zip",

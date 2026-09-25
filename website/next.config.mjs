@@ -7,12 +7,16 @@ const rawBase =
 // (.zip + .msi) workflows when a v* tag is pushed. Proxying them keeps the
 // download links same-origin; GitHub answers with a redirect to its CDN, so this
 // stays lightweight. These point at the current release tag.
-const releaseTag = "v0.3.0";
-const releaseBase =
-  `https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/download/${releaseTag}`;
-const appExeUrl = `${releaseBase}/UniversalFrameFX.exe`;
-const appMsiUrl = `${releaseBase}/UniversalFrameFX-x64.msi`;
-const appZipUrl = `${releaseBase}/UniversalFrameFX-x64.zip`;
+const relBase = (tag) =>
+  `https://github.com/ilikemacos/Chopsticks-SUPER-Resolution/releases/download/${tag}`;
+// The .exe points at the latest release that actually has the asset (v0.2.0).
+// The .msi and .zip point at v0.3.0, whose CI build attaches them; until that
+// release is published the site hides those two buttons (site.installersReady).
+const exeTag = "v0.2.0";
+const installerTag = "v0.3.0";
+const appExeUrl = `${relBase(exeTag)}/UniversalFrameFX.exe`;
+const appMsiUrl = `${relBase(installerTag)}/UniversalFrameFX-x64.msi`;
+const appZipUrl = `${relBase(installerTag)}/UniversalFrameFX-x64.zip`;
 
 const nextConfig = {
   reactStrictMode: true,

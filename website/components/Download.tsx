@@ -24,18 +24,22 @@ export function Download() {
           >
             Download the app ({site.appVersion} · .exe)
           </a>
-          <a
-            href={site.appMsiUrl}
-            className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
-          >
-            Installer (.msi)
-          </a>
-          <a
-            href={site.appZipUrl}
-            className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
-          >
-            Portable (.zip)
-          </a>
+          {site.installersReady && (
+            <>
+              <a
+                href={site.appMsiUrl}
+                className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
+              >
+                Installer (.msi)
+              </a>
+              <a
+                href={site.appZipUrl}
+                className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
+              >
+                Portable (.zip)
+              </a>
+            </>
+          )}
           <a
             href={site.releasesUrl}
             className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
@@ -45,14 +49,27 @@ export function Download() {
         </div>
         <p className="mt-3 text-xs leading-relaxed text-faint">
           The <code className="font-mono">.exe</code> is the self-contained WPF
-          app (no install). The <code className="font-mono">.msi</code> installs
-          per-machine into Program Files (needs admin). The{" "}
-          <code className="font-mono">.zip</code> is the portable C++ build and
-          bundles the CSR command-line tools —{" "}
-          <code className="font-mono">ufx-upscale</code> (upscale a file) and{" "}
-          <code className="font-mono">ufx-live</code> (the CSR real-time loop).
-          All three are built from source on Windows CI and carry SHA-256
-          checksums.
+          app (no install), built from source on Windows CI with a SHA-256
+          checksum.
+          {site.installersReady ? (
+            <>
+              {" "}The <code className="font-mono">.msi</code> installs
+              per-machine into Program Files (needs admin). The{" "}
+              <code className="font-mono">.zip</code> is the portable C++ build
+              and bundles the CSR command-line tools —{" "}
+              <code className="font-mono">ufx-upscale</code> (upscale a file) and{" "}
+              <code className="font-mono">ufx-live</code> (the CSR real-time
+              loop).
+            </>
+          ) : (
+            <>
+              {" "}An <code className="font-mono">.msi</code> installer and a
+              portable <code className="font-mono">.zip</code> bundling the CSR
+              command-line tools (<code className="font-mono">ufx-upscale</code>,{" "}
+              <code className="font-mono">ufx-live</code>) ship with the next
+              release.
+            </>
+          )}
         </p>
 
         <div className="mt-8 grid gap-4 text-sm text-muted sm:grid-cols-2">
