@@ -1,0 +1,83 @@
+{
+ "tolerance": 0.00392156862745098,
+ "note": "Reference uses exact reciprocals; GPU ports use fast approximations. Compare within tolerance, not bit-exactly.",
+ "cases": [
+  {
+   "name": "edge_vertical_2x",
+   "in": [
+    8,
+    8
+   ],
+   "out": [
+    16,
+    16
+   ]
+  },
+  {
+   "name": "edge_diagonal_1_5x",
+   "in": [
+    12,
+    12
+   ],
+   "out": [
+    18,
+    18
+   ]
+  },
+  {
+   "name": "gradient_1_333x",
+   "in": [
+    12,
+    9
+   ],
+   "out": [
+    16,
+    12
+   ]
+  },
+  {
+   "name": "checker_2x",
+   "in": [
+    8,
+    8
+   ],
+   "out": [
+    16,
+    16
+   ]
+  },
+  {
+   "name": "noise_1_333x",
+   "in": [
+    12,
+    12
+   ],
+   "out": [
+    16,
+    16
+   ]
+  },
+  {
+   "name": "colour_bands_1_333x",
+   "in": [
+    12,
+    12
+   ],
+   "out": [
+    16,
+    16
+   ]
+  },
+  {
+   "name": "soft_midtone_1_5x",
+   "in": [
+    10,
+    10
+   ],
+   "out": [
+    15,
+    15
+   ]
+  }
+ ]
+}

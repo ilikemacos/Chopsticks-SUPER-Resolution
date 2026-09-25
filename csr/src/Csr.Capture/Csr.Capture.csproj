@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Compile against Windows 11 projections so Win11-only APIs
+         (GraphicsCaptureSession.IsBorderRequired) are visible, but keep the
+         RUNTIME floor at Windows 10 1809 (17763). WGC itself landed in 1803,
+         but Direct3D11CaptureFramePool.CreateFreeThreaded requires 1809, and we
+         want it so capture never touches the UI thread. Anything newer than the
+         floor is guarded by OperatingSystem.IsWindowsVersionAtLeast. -->
+    <TargetFramework>net8.0-windows10.0.22621.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Platforms>x64</Platforms>
+    <!-- Lets CI compile this Windows-targeted project on Linux. It cannot RUN
+         there; this only proves it compiles. -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Version>0.1.0</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Managed D3D11/DXGI bindings (MIT). No native payload, so this restores
+         and compiles on non-Windows CI. -->
+    <PackageReference Include="Vortice.Direct3D11" Version="3.6.2" />
+    <PackageReference Include="Vortice.DXGI" Version="3.6.2" />
+    <PackageReference Include="Vortice.D3DCompiler" Version="3.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Csr.Core/Csr.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Shaders/*.hlsl" />
+  </ItemGroup>
+
+</Project>

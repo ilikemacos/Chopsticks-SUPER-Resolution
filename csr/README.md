@@ -112,3 +112,29 @@ which is not a place application code can go.
 
 The algorithm above is delivery-agnostic and stays valid whichever route is
 chosen. That choice is a product and policy decision, not a technical one.
+
+## C# port
+
+`src/Csr.Core` — the upscaler, `net8.0` with no Windows dependency, so it builds
+and tests on Linux CI. Verified against the Python reference: **24/24 tests**,
+7 golden cases × (resolve, full pipeline) plus 10 structural invariants, all
+within 1/255.
+
+The verification was mutation-tested: changing one luma weight from `0.2126f` to
+`0.5f` fails 7 tests. A test suite that cannot fail proves nothing, so this was
+checked rather than assumed.
+
+`src/Csr.Capture` — Windows Graphics Capture plus the D3D11 compute dispatch.
+Compiles (Windows-targeted, built on Linux), **not yet run on hardware**.
+`Shaders/*.hlsl` are `cs_5_0` so feature-level 11_0 GPUs can run them; they have
+not been compiled or executed. See `CAPTURE.md` for the latency and performance
+analysis, including why "zero compositor lag" is not achievable on a capture path.
+
+```bash
+dotnet test csr/Csr.sln -c Release      # 24 tests, no GPU needed
+cd csr/ref && python3 export_golden.py  # regenerate the golden vectors
+```
+
+The options rejected by ablation are **absent** from the C# port rather than
+present-and-disabled. They measured worse than FSR 1; leaving switches for them
+would only invite someone to turn them back on.

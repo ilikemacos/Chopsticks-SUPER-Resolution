@@ -220,7 +220,10 @@ def csr_sharpen(img: np.ndarray, cfg: CsrConfig = CsrConfig()) -> np.ndarray:
     sharp = float(np.exp2(-cfg.sharpness))
 
     def sh(dx, dy):
-        return np.roll(np.roll(img, -dy, axis=0), -dx, axis=1)
+        # Edge CLAMP, not wrap. np.roll would make the top row sample the bottom
+        # row, putting a wrong sharpening halo along every frame border.
+        p = np.pad(img, ((1, 1), (1, 1), (0, 0)), mode="edge")
+        return p[1 + dy:1 + dy + img.shape[0], 1 + dx:1 + dx + img.shape[1]]
 
     b, d, e, f, h = sh(0, -1), sh(-1, 0), img, sh(1, 0), sh(0, 1)
     ring = np.stack([b, d, f, h], 0)
