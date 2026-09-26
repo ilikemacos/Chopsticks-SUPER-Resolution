@@ -12,9 +12,9 @@ export function Download() {
         </h2>
         <p className="mt-3 max-w-2xl text-muted">
           The native desktop app is a real double-click{" "}
-          <code className="font-mono text-primary">.exe</code> (.NET 8 / WPF),
-          dark modern UI, no install step and no admin rights. The .NET runtime is
-          bundled, so nothing else is required.
+          <code className="font-mono text-primary">.exe</code> (.NET 8 / WPF):
+          dark modern UI, no install step, no admin rights, .NET runtime bundled.
+          Built from source on Windows CI with a SHA-256 checksum.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
@@ -48,31 +48,10 @@ export function Download() {
           </a>
         </div>
         <p className="mt-3 text-xs leading-relaxed text-faint">
-          The <code className="font-mono">.exe</code> is the self-contained WPF
-          app (no install), built from source on Windows CI with a SHA-256
-          checksum.{" "}
           {site.installersReady
             ? "An .msi installer (per-machine, needs admin) and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) are also available."
             : "An .msi installer and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) ship with the next release."}
         </p>
-
-        <div className="mt-8 grid gap-4 text-sm text-muted sm:grid-cols-2">
-          <div className="rounded-2xl border border-border bg-card/40 p-5">
-            <p className="font-display font-semibold text-fg">Native app (.exe)</p>
-            <p className="mt-1.5 leading-relaxed">
-              Real GPU detection, GPU switching, an honest capability matrix for
-              FSR / XeSS / frame generation, per-game profiles, and one-click
-              auto-update. Self-contained, no runtime to install.
-            </p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card/40 p-5">
-            <p className="font-display font-semibold text-fg">Prefer no download?</p>
-            <p className="mt-1.5 leading-relaxed">
-              A script-based PowerShell edition runs on any Windows 11 machine with
-              nothing to install. See the alternative below.
-            </p>
-          </div>
-        </div>
 
         <details className="mt-8 rounded-2xl border border-border bg-card/40 p-5">
           <summary className="cursor-pointer font-display text-sm font-semibold text-fg">
@@ -104,9 +83,9 @@ export function Download() {
 
         <p className="mt-5 text-xs leading-relaxed text-faint">
           Nothing here disables Windows Defender or SmartScreen, uses hidden
-          downloads, or requests elevation it does not need. Because the app is
-          not code-signed, SmartScreen may prompt once; choose &ldquo;More info
-          &rarr; Run anyway&rdquo;. Source, build and checksums are on GitHub.
+          downloads, or requests elevation it does not need. The app is not
+          code-signed, so SmartScreen may prompt once. Source, build and
+          checksums are on GitHub.
         </p>
       </div>
     </section>
