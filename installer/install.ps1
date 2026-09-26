@@ -52,6 +52,7 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 $AppName = "Universal FrameFX"
+$AppVersion = "0.4.0"
 $ZipName = "UniversalFrameFX-portable.zip"
 
 function Write-Step([string]$m) { Write-Host "==> $m" -ForegroundColor Cyan }
@@ -160,7 +161,7 @@ $uninstallCmd = "powershell -NoProfile -ExecutionPolicy Bypass -Command " +
     "Remove-Item -Force '$lnk' -ErrorAction SilentlyContinue; " +
     "Remove-Item -Recurse -Force 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\UniversalFrameFX'`""
 Set-ItemProperty -Path $uninstKey -Name "DisplayName" -Value $AppName
-Set-ItemProperty -Path $uninstKey -Name "DisplayVersion" -Value "0.1.0"
+Set-ItemProperty -Path $uninstKey -Name "DisplayVersion" -Value $AppVersion
 Set-ItemProperty -Path $uninstKey -Name "Publisher" -Value "Universal FrameFX (open source)"
 Set-ItemProperty -Path $uninstKey -Name "InstallLocation" -Value $InstallDir
 Set-ItemProperty -Path $uninstKey -Name "UninstallString" -Value $uninstallCmd

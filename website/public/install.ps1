@@ -77,7 +77,7 @@ $uninst = "powershell -NoProfile -ExecutionPolicy Bypass -Command " +
     "`"Remove-Item -Recurse -Force '$InstallDir'; Remove-Item -Force '$lnk' -ErrorAction SilentlyContinue; " +
     "Remove-Item -Recurse -Force '$k'`""
 Set-ItemProperty $k DisplayName $AppName
-Set-ItemProperty $k DisplayVersion "0.1.0"
+Set-ItemProperty $k DisplayVersion "0.4.0"
 Set-ItemProperty $k Publisher "Universal FrameFX (open source)"
 Set-ItemProperty $k InstallLocation $InstallDir
 Set-ItemProperty $k UninstallString $uninst

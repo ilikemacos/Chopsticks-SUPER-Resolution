@@ -25,7 +25,7 @@ Add-Type -AssemblyName System.Drawing
 # --------------------------------------------------------------------------
 # Paths
 # --------------------------------------------------------------------------
-$script:AppVersion = '0.1.0'
+$script:AppVersion = '0.4.0'
 $script:Root      = Join-Path $env:APPDATA 'UniversalFrameFX'
 $script:ProfDir   = Join-Path $script:Root 'profiles'
 $script:BackupDir = Join-Path $script:Root 'backups'
@@ -210,6 +210,7 @@ function Get-UfxFrameGens($gpu, $plat) {
     $s = @()
     $fsr = if (-not $plat.DX12) { 'Requires compatible implementation (DX12)' } else { 'Requires game integration' }
     $xe  = if (-not $plat.DX12) { 'Requires compatible implementation (DX12)' } else { 'Requires game integration' }
+    $s += [pscustomobject]@{ Name='CSR Frame Generation (ours)'; State='Supported - no game integration'; Note='Our own: interpolates a frame between two finished frames using optical flow estimated from the images themselves, so it works on any app. It raises displayed FPS but adds latency (a frame is held to interpolate against) and can smear fast motion, disocclusions and HUD/UI - not "free FPS". Wants a ~60 FPS base.' }
     $s += [pscustomobject]@{ Name='FSR 3 Frame Generation'; State=$fsr; Note='Cannot be added to a game that did not ship it (needs the swapchain + engine motion vectors).' }
     $s += [pscustomobject]@{ Name='XeSS Frame Generation'; State=$xe;  Note='Cannot be added to a game that did not ship it. Best on Intel Arc where the game integrates it.' }
     return $s
