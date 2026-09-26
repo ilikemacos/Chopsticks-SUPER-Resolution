@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
+// Points at the production branch (main): the site is deployed from main, and
+// main carries website/public/* (merged from the feature branch), so the
+// beforeFiles rewrites proxy the downloads from the same branch that builds the
+// site. A pushed update to main's public/ goes live with no rebuild.
 const rawBase =
-  "https://raw.githubusercontent.com/ilikemacos/Chopsticks-SUPER-Resolution/claude/great-babbage-lqfk8p/website/public";
+  "https://raw.githubusercontent.com/ilikemacos/Chopsticks-SUPER-Resolution/main/website/public";
 
 // The native desktop app and the Windows installers are published as GitHub
 // Release assets, built on Windows CI by the wpf-app.yml (.exe) and package.yml
