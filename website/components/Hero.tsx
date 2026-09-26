@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { site } from "@/lib/site";
 import { SystemCard } from "./SystemCard";
-import { InstallBanner } from "./InstallBanner";
 
 const tools = [
   { href: "/console#library", label: "Game Library", desc: "Installed titles" },
@@ -24,7 +23,7 @@ export function Hero() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-good" />
           </span>
           <span className="font-mono uppercase tracking-widest">
-            Open source / MIT / Windows 11
+            Open source · MIT · Windows 11
           </span>
         </div>
 
@@ -35,7 +34,7 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-          CSR, our own spatial upscaler, plus real GPU detection, a game
+          CSR, our own spatial upscaler — plus real GPU detection, a game
           inspector, per-app profiles and measured benchmarks. Honest about what
           each technology can and cannot do, and about what is finished.
         </p>
@@ -53,12 +52,16 @@ export function Hero() {
           >
             Universal Upscaling
           </Link>
+          <a
+            href={site.appExeUrl}
+            className="rounded-xl border border-border px-7 py-3.5 font-medium text-fg transition-colors hover:border-primary/30"
+          >
+            Download .exe
+          </a>
         </div>
 
-        <InstallBanner />
-
         <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
-          Windows 11 64-bit / native .NET 8 / {site.appVersion}
+          Windows 11 64-bit · native .NET 8 · {site.appVersion}
         </p>
 
         {/* Tool shortcuts */}
