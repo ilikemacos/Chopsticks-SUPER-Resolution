@@ -1,7 +1,9 @@
 import { site } from "@/lib/site";
 
+const btn =
+  "rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30";
+
 export function Download() {
-  const iex = `iex (iwr -useb ${site.installScriptUrl})`;
   return (
     <section id="download" className="relative mx-auto max-w-6xl px-4 py-24 sm:px-6">
       <div className="orb animate-pulse-slow left-1/2 top-10 h-[360px] w-[360px] -translate-x-1/2 bg-primary/15" />
@@ -11,10 +13,9 @@ export function Download() {
           Download
         </h2>
         <p className="mt-3 max-w-2xl text-muted">
-          The native desktop app is a real double-click{" "}
-          <code className="font-mono text-primary">.exe</code> (.NET 8 / WPF):
-          dark modern UI, no install step, no admin rights, .NET runtime bundled.
-          Built from source on Windows CI with a SHA-256 checksum.
+          The native desktop app is a real double-click .exe (.NET 8 / WPF): no
+          install step, no admin rights, .NET runtime bundled. Built from source
+          on Windows CI with a SHA-256 checksum.
         </p>
 
         <div className="mt-8 flex flex-wrap gap-3">
@@ -26,66 +27,21 @@ export function Download() {
           </a>
           {site.installersReady && (
             <>
-              <a
-                href={site.appMsiUrl}
-                className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
-              >
-                Installer (.msi)
-              </a>
-              <a
-                href={site.appZipUrl}
-                className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
-              >
-                Portable (.zip)
-              </a>
+              <a href={site.appMsiUrl} className={btn}>Installer (.msi)</a>
+              <a href={site.appZipUrl} className={btn}>Portable (.zip)</a>
             </>
           )}
-          <a
-            href={site.releasesUrl}
-            className="rounded-xl border border-border px-6 py-3 font-medium text-fg transition-colors hover:border-primary/30"
-          >
-            All releases &amp; checksums
-          </a>
+          <a href={site.releasesUrl} className={btn}>All releases &amp; checksums</a>
+          <a href={site.portableZipUrl} className={btn}>PowerShell edition (.zip)</a>
         </div>
-        <p className="mt-3 text-xs leading-relaxed text-faint">
+
+        <p className="mt-4 text-xs leading-relaxed text-faint">
           {site.installersReady
             ? "An .msi installer (per-machine, needs admin) and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) are also available."
-            : "An .msi installer and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) ship with the next release."}
-        </p>
-
-        <details className="mt-8 rounded-2xl border border-border bg-card/40 p-5">
-          <summary className="cursor-pointer font-display text-sm font-semibold text-fg">
-            Alternative: PowerShell edition (no .exe)
-          </summary>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <a
-              href={site.portableZipUrl}
-              className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:border-primary/30"
-            >
-              Download .zip (portable)
-            </a>
-            <a
-              href={site.installScriptUrl}
-              className="rounded-lg border border-border px-5 py-2.5 text-sm font-medium text-fg transition-colors hover:border-primary/30"
-            >
-              View install.ps1
-            </a>
-          </div>
-          <div className="mt-4 rounded-xl border border-border bg-card p-4">
-            <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-muted">
-              One-line install (verifies checksums, no admin)
-            </p>
-            <pre className="overflow-x-auto font-mono text-sm text-primary">
-              <code>{iex}</code>
-            </pre>
-          </div>
-        </details>
-
-        <p className="mt-5 text-xs leading-relaxed text-faint">
-          Nothing here disables Windows Defender or SmartScreen, uses hidden
-          downloads, or requests elevation it does not need. The app is not
-          code-signed, so SmartScreen may prompt once. Source, build and
-          checksums are on GitHub.
+            : "An .msi installer and a portable .zip bundling the CSR command-line tools (ufx-upscale, ufx-live) ship with the next release."}{" "}
+          Nothing here disables Defender or SmartScreen or requests elevation it
+          does not need; the app is not code-signed, so SmartScreen may prompt
+          once. Source, build and checksums are on GitHub.
         </p>
       </div>
     </section>
