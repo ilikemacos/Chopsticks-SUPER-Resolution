@@ -1,4 +1,5 @@
 import { Nav } from "@/components/Nav";
+import { InstallBanner } from "@/components/InstallBanner";
 import { Hero } from "@/components/Hero";
 import { Features } from "@/components/Features";
 import { CompatTable } from "@/components/CompatTable";
@@ -12,6 +13,7 @@ export default function Home() {
     <>
       <Nav />
       <main>
+        <InstallBanner />
         <Hero />
         <Features />
         <CompatTable />

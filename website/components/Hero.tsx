@@ -11,7 +11,6 @@ const tools = [
 ];
 
 export function Hero() {
-  const iex = `iex (iwr -useb ${site.installScriptUrl})`;
   return (
     <section className="relative overflow-hidden">
       <div className="orb animate-pulse-slow left-[-140px] top-[-180px] h-[460px] w-[460px] bg-primary/20 blur-[120px]" />
@@ -24,7 +23,7 @@ export function Hero() {
             <span className="relative inline-flex h-2 w-2 rounded-full bg-good" />
           </span>
           <span className="font-mono uppercase tracking-widest">
-            Open source / MIT / Windows 11
+            Open source · MIT · Windows 11
           </span>
         </div>
 
@@ -35,46 +34,37 @@ export function Hero() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl text-lg text-muted">
-          CSR, our own spatial upscaler, plus real GPU detection, a game
+          CSR, our own spatial upscaler — plus real GPU detection, a game
           inspector, per-app profiles and measured benchmarks. Honest about what
           each technology can and cannot do, and about what is finished.
         </p>
 
-        {/* One-line install: paste into PowerShell. Verifies checksums, no admin. */}
-        <div className="mx-auto mt-9 max-w-2xl rounded-xl border border-border bg-card/60 p-4 text-left backdrop-blur">
-          <p className="mb-2 font-mono text-[11px] uppercase tracking-widest text-muted">
-            Install in one line (PowerShell, verifies checksums, no admin)
-          </p>
-          <pre className="overflow-x-auto font-mono text-sm text-primary">
-            <code>{iex}</code>
-          </pre>
-        </div>
-
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <a
-            href={site.appExeUrl}
-            className="rounded-xl bg-primary px-7 py-3.5 font-semibold text-primaryFg shadow-glow transition-colors hover:bg-primary/90"
-          >
-            Download .exe ({site.appVersion})
-          </a>
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
           <Link
             href="/console#scan"
-            className="rounded-xl border border-border px-7 py-3.5 font-medium text-fg transition-colors hover:border-primary/30"
+            className="rounded-xl bg-primary px-7 py-3.5 font-semibold text-primaryFg shadow-glow transition-colors hover:bg-primary/90"
           >
             Scan my PC
           </Link>
-          <a
-            href="#download"
+          <Link
+            href="/console#upscaling"
             className="rounded-xl border border-border px-7 py-3.5 font-medium text-fg transition-colors hover:border-primary/30"
           >
-            All downloads
+            Universal Upscaling
+          </Link>
+          <a
+            href={site.appExeUrl}
+            className="rounded-xl border border-border px-7 py-3.5 font-medium text-fg transition-colors hover:border-primary/30"
+          >
+            Download .exe
           </a>
         </div>
 
         <p className="mt-5 font-mono text-[11px] uppercase tracking-[0.2em] text-faint">
-          Windows 11 64-bit / native .NET 8 / {site.appVersion}
+          Windows 11 64-bit · native .NET 8 · {site.appVersion}
         </p>
 
+        {/* Tool shortcuts */}
         <div className="mx-auto mt-14 grid max-w-3xl grid-cols-2 gap-3 sm:grid-cols-5">
           {tools.map((t) => (
             <Link
