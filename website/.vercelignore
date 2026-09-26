@@ -1,0 +1,8 @@
+# These large binaries are served to the site via the beforeFiles rewrites in
+# next.config.mjs, which proxy /UniversalFrameFX.exe and
+# /UniversalFrameFX-portable.zip to raw.githubusercontent.com (the main branch).
+# They therefore never need to ship inside the Vercel build, so we keep them out
+# to trim every production deployment. They stay committed under public/ so the
+# raw URLs continue to resolve.
+public/UniversalFrameFX.exe
+public/UniversalFrameFX-portable.zip
