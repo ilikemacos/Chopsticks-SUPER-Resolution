@@ -10,13 +10,19 @@ namespace ufx {
 
 enum class FrameGenId {
     None,
-    Fsr3Fg,       // AMD FidelityFX Frame Generation (part of FSR 3)
-    XessFg,       // Intel XeSS Frame Generation
+    Fsr3Fg,          // AMD FidelityFX Frame Generation (part of FSR 3)
+    XessFg,          // Intel XeSS Frame Generation
+    CsrInterpolated, // Our own external optical-flow interpolation (any app)
 };
 
-// Frame generation is fundamentally a *game-integrated* technology: it needs
-// access to the swapchain, motion vectors and UI composition. There is no
-// reliable, general external mechanism to add it to an arbitrary game.
+// Motion-vector frame generation (FSR 3 FG / XeSS FG / DLSS 3) is fundamentally a
+// *game-integrated* technology: it needs the swapchain, motion vectors and UI
+// composition, so it cannot be added to an arbitrary game from outside.
+//
+// The one exception is CsrInterpolated: optical-flow interpolation between two
+// frames the app already presented. It needs no engine data, so it works on any
+// app -- but it ADDS latency and smears on disocclusion/HUD, so it is smoothness,
+// never free performance. Measured in csr/FRAMEGEN.md.
 enum class FrameGenState {
     Disabled,
     Supported,                // Available and configurable for this game

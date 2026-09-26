@@ -63,6 +63,30 @@ def _halton(i: int, base: int) -> float:
     return r
 
 
+def _pose(name: str, t: int):
+    """Camera scale z and world offset for a frame (center handled by caller)."""
+    if name == "zoom":
+        return 1.0 - 0.012 * t, np.array([0.20 * t, 0.10 * t])
+    return 1.0, np.array([0.9 * t, 0.55 * t])
+
+
+def backward_coords(name: str, wl: int, hl: int, ratio: float,
+                    t_dst: int, t_src: int) -> np.ndarray:
+    """Exact HR source coords (index space) in frame t_src for each HR pixel of
+    frame t_dst -- the perfect motion field between any two frames. Used to build
+    the true-motion frame-interpolation ceiling in framegen.py."""
+    wh, hh = int(round(wl * ratio)), int(round(hl * ratio))
+    cx, cy = wh / 2.0, hh / 2.0
+    sx, sy = np.meshgrid(np.arange(wh) + 0.5, np.arange(hh) + 0.5)
+    z_d, off_d = _pose(name, t_dst)
+    z_s, off_s = _pose(name, t_src)
+    wx = cx + (sx - cx) * z_d + off_d[0]
+    wy = cy + (sy - cy) * z_d + off_d[1]
+    spx = cx + (wx - off_s[0] - cx) / z_s
+    spy = cy + (wy - off_s[1] - cy) / z_s
+    return np.stack([spx - 0.5, spy - 0.5], axis=-1).astype(np.float32)
+
+
 def make_scene(name: str, wl: int, hl: int, ratio: float = 2.0,
                frames: int = 20, ss: int = 3):
     """Return a list of per-frame dicts for `name`.
@@ -84,12 +108,7 @@ def make_scene(name: str, wl: int, hl: int, ratio: float = 2.0,
     sxl, syl = np.meshgrid(lxs, lys)                    # LR screen centres
 
     def pose_of(t: int):
-        if name == "zoom":
-            z = 1.0 - 0.012 * t                         # slow zoom-in
-            off = np.array([0.20 * t, 0.10 * t])
-        else:
-            z = 1.0
-            off = np.array([0.9 * t, 0.55 * t])         # diagonal pan
+        z, off = _pose(name, t)
         return (center, z, off)
 
     # A moving occluder (disocclusion scene): a vertical bar sweeping right,

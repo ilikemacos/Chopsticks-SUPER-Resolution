@@ -7,6 +7,7 @@ namespace ufx {
 FrameGenRegistry::FrameGenRegistry() {
     gens_.push_back(std::make_unique<FsrFrameGenerator>());
     gens_.push_back(std::make_unique<XessFrameGenerator>());
+    gens_.push_back(std::make_unique<CsrFrameGenerator>());
 }
 
 IFrameGenerator* FrameGenRegistry::Find(FrameGenId id) const {

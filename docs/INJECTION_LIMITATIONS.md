@@ -26,14 +26,28 @@ produces the motion vectors/depth the wrapped upscaler needs. **Opt-in, per game
 reversible, never for anti-cheat titles.**
 
 ### 4. Compatibility-layer functionality
-Spatial-only effects (FSR 1-style sharpening/scaling) can run as a post-process
-in a compatibility layer because they need only the final image. This is genuinely
-generic but is **not** the same as temporal FSR 2/3 or XeSS. UFX labels it clearly.
+Effects that need only the **final presented image** can run as a post-process on
+captured frames, generically, on any app:
+
+- **Spatial upscaling** (FSR 1-style / our CSR): resolve one finished frame. Real
+  and generic — but **not** the same as temporal FSR 2/3 or XeSS.
+- **Optical-flow frame interpolation** ("CSR frame gen"): synthesize a frame
+  between two captured frames by estimating motion from the images themselves.
+  Also generic (this is what Lossless Scaling does), but it **adds latency and
+  smears on disocclusion/HUD**, so UFX labels it as smoothness-not-performance and
+  never as free FPS. Measured in [`../csr/FRAMEGEN.md`](../csr/FRAMEGEN.md).
+
+UFX labels every case clearly and states the costs.
 
 ### 5. Technologies that cannot be implemented externally
-Temporal upscaling and frame generation for a game with no integration and no
-public wrapper. UFX will say so and explain why, rather than shipping something
-that looks like it works but produces artifacts or trips anti-cheat.
+**Temporal** upscaling and **engine-integrated (motion-vector) frame generation**
+for a game with no integration and no public wrapper. These need per-frame engine
+data (motion vectors, depth, UI masks) that does not exist outside the renderer;
+estimating it from finished frames is a measured net loss for temporal upscaling
+([`../csr/TEMPORAL.md`](../csr/TEMPORAL.md)). UFX says so rather than shipping
+something that looks like it works but produces artifacts or trips anti-cheat.
+(Note the boundary: image-only *interpolation* frame gen is category 4 above;
+*motion-vector* frame gen is here.)
 
 ## The core technical reason
 

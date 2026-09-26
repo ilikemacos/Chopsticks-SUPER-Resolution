@@ -89,6 +89,21 @@ the measured optimum for the approaches tested.
 (max channel difference 0.0000). The baseline is therefore the real algorithm, so
 the deltas above are attributable to the changes and not to implementation drift.
 
+## CSR 1.0, CSR 1.1, and what each part can do
+
+- **CSR 1.0** — the spatial upscaler below (resolve one finished frame; any app).
+- **CSR 1.1** — adds **external frame generation** (optical-flow interpolation
+  between two presented frames) plus any measured spatial gains. Frame gen is
+  measured in [`FRAMEGEN.md`](FRAMEGEN.md): +6 dB over motion-blind blending,
+  essentially at the perfect-motion ceiling — because interpolation is *bounded
+  between two real frames*. It raises displayed FPS but **adds latency** and
+  smears on disocclusion/HUD, so it is smoothness, never free performance.
+- **Not** DLSS/FSR 2 temporal upscaling (measured impossible externally,
+  [`TEMPORAL.md`](TEMPORAL.md)) and **not** engine-integrated frame generation.
+
+The three references — `ref/csr.py`, `ref/temporal.py`, `ref/framegen.py`, each
+with a self-gating eval — are the standing evidence for the boundaries above.
+
 ## Honest scope
 
 - CSR is **better than FSR 1 by +0.74 dB** on edge reconstruction, and by

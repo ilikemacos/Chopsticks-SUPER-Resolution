@@ -21,9 +21,38 @@ Frame generation needs three things an external tool cannot provide:
 - **UI composition.** The HUD must be excluded from motion estimation, or it
   smears. Only the engine knows which draw calls are UI.
 
-Because of this, **there is no reliable, general way to add frame generation to a
-game that did not ship it.** Any tool claiming to do so universally is either
-overpromising or relying on brittle per-game hacks.
+Because of this, **there is no reliable, general way to add this *engine-integrated*
+frame generation (FSR 3 FG / XeSS FG / DLSS 3) to a game that did not ship it.**
+A tool claiming to add *that* universally is overpromising or relying on brittle
+per-game injection.
+
+## The one external kind that does work: optical-flow interpolation
+
+There is a second, weaker kind of frame generation that **does** work on any app,
+and it is worth being precise about rather than lumping it in with the above.
+Instead of using engine motion vectors, it takes two frames the app already
+presented, **estimates optical flow from the images themselves**, and synthesizes
+a frame halfway between them (this is what Lossless Scaling ships). Our own
+measured reference and quality numbers for it are in
+[`../csr/FRAMEGEN.md`](../csr/FRAMEGEN.md): estimated-motion interpolation scores
++6 dB over motion-blind blending and lands within ~0.3 dB of a perfect-motion
+ceiling, because interpolation is *bounded between two real frames* (unlike
+temporal upscaling, which is a net loss externally — [`../csr/TEMPORAL.md`](../csr/TEMPORAL.md)).
+
+Its honest costs are real and non-negotiable to state:
+
+- **It adds latency and cannot remove it.** A real frame is held back to
+  interpolate against, and there is no Reflex/anti-lag lever on another process's
+  game. Displayed FPS rises; **input responsiveness gets worse.**
+- **It interpolates, it does not render.** The synthetic frame is a guess between
+  two real ones — smoothness, not new game state.
+- **It smears on disocclusion, fast motion and HUD/UI**, because it has no engine
+  data to mask the UI or resolve newly revealed regions. It needs an already-
+  decent base frame rate (~60 FPS+).
+
+So the accurate statement is: *engine-integrated* FG cannot be added externally;
+*optical-flow interpolation* FG can, at the cost of latency and artifacts, and
+must never be sold as free performance.
 
 ## Latency
 
