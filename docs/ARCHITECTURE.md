@@ -31,6 +31,14 @@ It is **not**:
 | XeSS Frame Generation | Game integration | Game integration | Config only |
 | DLSS ↔ FSR3 wrappers | Public wrapper DLL | Per-game DLL swap | Optional, opt-in, with backup |
 
+**Can CSR be made temporal (DLSS 2-class)?** No, not from outside a game — and
+this is measured, not asserted. `csr/TEMPORAL.md` reports the experiment: with
+perfect engine motion vectors a temporal path gains +4.15 dB over spatial CSR,
+but with motion estimated from finished frames (all a capture-only tool can get)
+it lands 2.3 dB *below* spatial CSR. Temporal quality requires engine-supplied
+motion vectors (the FSR 2 / XeSS / wrapper rows above), where a real temporal
+upscaler already exists.
+
 Rows populated from vendor public docs as of Q1 2026; verify at runtime via `capabilities.json`.
 
 ## Modules

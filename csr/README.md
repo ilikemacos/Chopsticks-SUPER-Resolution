@@ -97,8 +97,14 @@ the deltas above are attributable to the changes and not to implementation drift
 - On already-smooth content a sharpener loses to plain bilinear on fidelity
   metrics. CSR is an upscaler for detailed content, not a universal improvement.
 - It is **clearly better than bilinear**, which is the floor.
-- It is **not comparable to FSR 2, DLSS or XeSS**. Those reconstruct from frame
-  history; CSR has one frame.
+- It is **not comparable to FSR 2, DLSS or XeSS**, and cannot be made so from
+  outside a game. Those reconstruct from frame history using engine motion
+  vectors; CSR has one frame. This is measured, not asserted — see
+  [`TEMPORAL.md`](TEMPORAL.md): with *perfect* motion vectors a temporal path
+  gains +4.15 dB over CSR 1.0, but with motion *estimated* from finished frames
+  (all an external tool can get) it lands 2.3 dB **below** spatial CSR. A
+  "CSR 1.1 = DLSS 2" is not achievable; run `ref/temporal_eval.py` before
+  proposing otherwise.
 - It **costs** GPU time and does not create frames. No FPS claim attaches to it.
 - 4K output is out of scope for now. Ratios beyond ~2× work arithmetically but
   fall outside the design's quality range and must not be presented as
