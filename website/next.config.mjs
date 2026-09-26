@@ -29,7 +29,14 @@ const nextConfig = {
   // reachable). This keeps everything same-origin while the bytes come straight
   // from git, so a fixed install.ps1 goes live on push with no rebuild.
   async rewrites() {
-    return [
+    // beforeFiles: these run BEFORE the filesystem/public folder, so the raw
+    // proxy wins even though the same files are also committed under public/
+    // (they must stay in git for the raw URLs to resolve). This is what makes a
+    // pushed install.ps1 / portable zip / .exe go live with no redeploy; with
+    // the default (afterFiles) the committed public copy shadowed the rewrite
+    // and the site served a stale deploy-time snapshot.
+    return {
+      beforeFiles: [
       {
         source: "/UniversalFrameFX.exe",
         destination: appExeUrl,
@@ -62,7 +69,8 @@ const nextConfig = {
         source: "/install.ps1.sha256",
         destination: `${rawBase}/install.ps1.sha256`,
       },
-    ];
+      ],
+    };
   },
 };
 
