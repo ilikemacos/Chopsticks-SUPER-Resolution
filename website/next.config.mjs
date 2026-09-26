@@ -12,9 +12,12 @@ const relBase = (tag) =>
 // The .exe points at the latest release that actually has the asset (v0.2.0).
 // The .msi and .zip point at v0.3.0, whose CI build attaches them; until that
 // release is published the site hides those two buttons (site.installersReady).
-const exeTag = "v0.2.0";
+// The .exe is served directly from this origin: the binary is committed in
+// website/public and proxied from raw, so the download stays on the site and
+// never redirects to github.com. The .msi and .zip still point at the v0.3.0
+// release, whose CI build attaches them.
 const installerTag = "v0.3.0";
-const appExeUrl = `${relBase(exeTag)}/UniversalFrameFX.exe`;
+const appExeUrl = `${rawBase}/UniversalFrameFX.exe`;
 const appMsiUrl = `${relBase(installerTag)}/UniversalFrameFX-x64.msi`;
 const appZipUrl = `${relBase(installerTag)}/UniversalFrameFX-x64.zip`;
 
